@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -59,7 +60,7 @@ ApplicationContainer
 ForwarderHelper::Install(NodeContainer c) const
 {
     ApplicationContainer apps;
-    for (auto i = c.Begin(); i != c.End(); ++i)
+    for (NodeContainer::Iterator i = c.Begin(); i != c.End(); ++i)
     {
         apps.Add(InstallPriv(*i));
     }

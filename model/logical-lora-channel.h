@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -43,10 +44,10 @@ class SubBand;
 class LogicalLoraChannel : public Object
 {
   public:
-    static TypeId GetTypeId();
+    static TypeId GetTypeId(void);
 
     LogicalLoraChannel();
-    ~LogicalLoraChannel() override;
+    virtual ~LogicalLoraChannel();
 
     LogicalLoraChannel(double frequency);
 
@@ -64,7 +65,7 @@ class LogicalLoraChannel : public Object
      *
      * \return The center frequency of this channel.
      */
-    double GetFrequency() const;
+    double GetFrequency(void) const;
 
     /**
      * Set the frequency (MHz).
@@ -86,27 +87,27 @@ class LogicalLoraChannel : public Object
     /**
      * Get the minimum Data Rate that is allowed on this channel.
      */
-    uint8_t GetMinimumDataRate() const;
+    uint8_t GetMinimumDataRate(void);
 
     /**
      * Get the maximum Data Rate that is allowed on this channel.
      */
-    uint8_t GetMaximumDataRate() const;
+    uint8_t GetMaximumDataRate(void);
 
     /**
      * Set this channel as enabled for uplink.
      */
-    void SetEnabledForUplink();
+    void SetEnabledForUplink(void);
 
     /**
      * Set this channel as disabled for uplink.
      */
-    void DisableForUplink();
+    void DisableForUplink(void);
 
     /**
      * Test whether this channel is marked as enabled for uplink.
      */
-    bool IsEnabledForUplink() const;
+    bool IsEnabledForUplink(void);
 
   private:
     /**

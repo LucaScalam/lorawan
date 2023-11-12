@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  *
  * This program is free software; you can redistribute it and/or modify
@@ -30,7 +31,7 @@ NS_LOG_COMPONENT_DEFINE("LoraRadioEnergyModel");
 NS_OBJECT_ENSURE_REGISTERED(LoraRadioEnergyModel);
 
 TypeId
-LoraRadioEnergyModel::GetTypeId()
+LoraRadioEnergyModel::GetTypeId(void)
 {
     static TypeId tid =
         TypeId("ns3::LoraRadioEnergyModel")
@@ -82,7 +83,7 @@ LoraRadioEnergyModel::LoraRadioEnergyModel()
     m_nPendingChangeState = 0;
     m_isSupersededChangeState = false;
     m_energyDepletionCallback.Nullify();
-    m_source = nullptr;
+    m_source = NULL;
     // set callback for EndDeviceLoraPhy listener
     m_listener = new LoraRadioEnergyModelPhyListener;
     m_listener->SetChangeStateCallback(MakeCallback(&DeviceEnergyModel::ChangeState, this));
@@ -101,19 +102,19 @@ void
 LoraRadioEnergyModel::SetEnergySource(Ptr<EnergySource> source)
 {
     NS_LOG_FUNCTION(this << source);
-    NS_ASSERT(source);
+    NS_ASSERT(source != NULL);
     m_source = source;
 }
 
 double
-LoraRadioEnergyModel::GetTotalEnergyConsumption() const
+LoraRadioEnergyModel::GetTotalEnergyConsumption(void) const
 {
     NS_LOG_FUNCTION(this);
     return m_totalEnergyConsumption;
 }
 
 double
-LoraRadioEnergyModel::GetStandbyCurrentA() const
+LoraRadioEnergyModel::GetStandbyCurrentA(void) const
 {
     NS_LOG_FUNCTION(this);
     return m_idleCurrentA;
@@ -127,7 +128,7 @@ LoraRadioEnergyModel::SetStandbyCurrentA(double idleCurrentA)
 }
 
 double
-LoraRadioEnergyModel::GetTxCurrentA() const
+LoraRadioEnergyModel::GetTxCurrentA(void) const
 {
     NS_LOG_FUNCTION(this);
     return m_txCurrentA;
@@ -141,7 +142,7 @@ LoraRadioEnergyModel::SetTxCurrentA(double txCurrentA)
 }
 
 double
-LoraRadioEnergyModel::GetRxCurrentA() const
+LoraRadioEnergyModel::GetRxCurrentA(void) const
 {
     NS_LOG_FUNCTION(this);
     return m_rxCurrentA;
@@ -155,7 +156,7 @@ LoraRadioEnergyModel::SetRxCurrentA(double rxCurrentA)
 }
 
 double
-LoraRadioEnergyModel::GetSleepCurrentA() const
+LoraRadioEnergyModel::GetSleepCurrentA(void) const
 {
     NS_LOG_FUNCTION(this);
     return m_sleepCurrentA;
@@ -169,7 +170,7 @@ LoraRadioEnergyModel::SetSleepCurrentA(double sleepCurrentA)
 }
 
 EndDeviceLoraPhy::State
-LoraRadioEnergyModel::GetCurrentState() const
+LoraRadioEnergyModel::GetCurrentState(void) const
 {
     NS_LOG_FUNCTION(this);
     return m_currentState;
@@ -275,7 +276,7 @@ LoraRadioEnergyModel::ChangeState(int newState)
 }
 
 void
-LoraRadioEnergyModel::HandleEnergyDepletion()
+LoraRadioEnergyModel::HandleEnergyDepletion(void)
 {
     NS_LOG_FUNCTION(this);
     NS_LOG_DEBUG("LoraRadioEnergyModel:Energy is depleted!");
@@ -287,14 +288,14 @@ LoraRadioEnergyModel::HandleEnergyDepletion()
 }
 
 void
-LoraRadioEnergyModel::HandleEnergyChanged()
+LoraRadioEnergyModel::HandleEnergyChanged(void)
 {
     NS_LOG_FUNCTION(this);
     NS_LOG_DEBUG("LoraRadioEnergyModel:Energy changed!");
 }
 
 void
-LoraRadioEnergyModel::HandleEnergyRecharged()
+LoraRadioEnergyModel::HandleEnergyRecharged(void)
 {
     NS_LOG_FUNCTION(this);
     NS_LOG_DEBUG("LoraRadioEnergyModel:Energy is recharged!");
@@ -306,7 +307,7 @@ LoraRadioEnergyModel::HandleEnergyRecharged()
 }
 
 LoraRadioEnergyModelPhyListener*
-LoraRadioEnergyModel::GetPhyListener()
+LoraRadioEnergyModel::GetPhyListener(void)
 {
     NS_LOG_FUNCTION(this);
     return m_listener;
@@ -317,15 +318,15 @@ LoraRadioEnergyModel::GetPhyListener()
  */
 
 void
-LoraRadioEnergyModel::DoDispose()
+LoraRadioEnergyModel::DoDispose(void)
 {
     NS_LOG_FUNCTION(this);
-    m_source = nullptr;
+    m_source = NULL;
     m_energyDepletionCallback.Nullify();
 }
 
 double
-LoraRadioEnergyModel::DoGetCurrentA() const
+LoraRadioEnergyModel::DoGetCurrentA(void) const
 {
     NS_LOG_FUNCTION(this);
     switch (m_currentState)
@@ -427,7 +428,7 @@ LoraRadioEnergyModelPhyListener::NotifyTxStart(double txPowerDbm)
 }
 
 void
-LoraRadioEnergyModelPhyListener::NotifySleep()
+LoraRadioEnergyModelPhyListener::NotifySleep(void)
 {
     NS_LOG_FUNCTION(this);
     if (m_changeStateCallback.IsNull())
@@ -438,7 +439,7 @@ LoraRadioEnergyModelPhyListener::NotifySleep()
 }
 
 void
-LoraRadioEnergyModelPhyListener::NotifyStandby()
+LoraRadioEnergyModelPhyListener::NotifyStandby(void)
 {
     NS_LOG_FUNCTION(this);
     if (m_changeStateCallback.IsNull())
@@ -453,7 +454,7 @@ LoraRadioEnergyModelPhyListener::NotifyStandby()
  */
 
 void
-LoraRadioEnergyModelPhyListener::SwitchToStandby()
+LoraRadioEnergyModelPhyListener::SwitchToStandby(void)
 {
     NS_LOG_FUNCTION(this);
     if (m_changeStateCallback.IsNull())

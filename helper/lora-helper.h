@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -81,7 +82,7 @@ class LoraHelper
      * This method automatically connects to trace sources to computes relevant
      * metrics.
      */
-    void EnablePacketTracking();
+    void EnablePacketTracking(void);
 
     /**
      * Periodically prints the simulation time to the standard output.
@@ -112,9 +113,9 @@ class LoraHelper
 
     void DoPrintGlobalPerformance(std::string filename);
 
-    LoraPacketTracker& GetPacketTracker();
+    LoraPacketTracker& GetPacketTracker(void);
 
-    LoraPacketTracker* m_packetTracker = nullptr;
+    LoraPacketTracker* m_packetTracker = 0;
 
     time_t m_oldtime;
 

@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -64,7 +65,7 @@ class EndDeviceLoraPhyListener
      * We are about to send the first bit of the packet.
      * We do not send any event to notify the end of
      * transmission. Listeners should assume that the
-     * channel implicitly reverts to the idle state
+     * channel implicitely reverts to the idle state
      * unless they have received a cca busy report.
      *
      * \param duration the expected transmission duration.
@@ -75,12 +76,12 @@ class EndDeviceLoraPhyListener
     /**
      * Notify listeners that we went to sleep
      */
-    virtual void NotifySleep() = 0;
+    virtual void NotifySleep(void) = 0;
 
     /**
      * Notify listeners that we woke up
      */
-    virtual void NotifyStandby() = 0;
+    virtual void NotifyStandby(void) = 0;
 };
 
 /**
@@ -142,33 +143,33 @@ class EndDeviceLoraPhy : public LoraPhy
         RX
     };
 
-    static TypeId GetTypeId();
+    static TypeId GetTypeId(void);
 
     // Constructor and destructor
     EndDeviceLoraPhy();
-    ~EndDeviceLoraPhy() override;
+    virtual ~EndDeviceLoraPhy();
 
     // Implementation of LoraPhy's pure virtual functions
-    void StartReceive(Ptr<Packet> packet,
-                      double rxPowerDbm,
-                      uint8_t sf,
-                      Time duration,
-                      double frequencyMHz) override = 0;
+    virtual void StartReceive(Ptr<Packet> packet,
+                              double rxPowerDbm,
+                              uint8_t sf,
+                              Time duration,
+                              double frequencyMHz) = 0;
 
     // Implementation of LoraPhy's pure virtual functions
-    void EndReceive(Ptr<Packet> packet, Ptr<LoraInterferenceHelper::Event> event) override = 0;
+    virtual void EndReceive(Ptr<Packet> packet, Ptr<LoraInterferenceHelper::Event> event) = 0;
 
     // Implementation of LoraPhy's pure virtual functions
-    void Send(Ptr<Packet> packet,
-              LoraTxParameters txParams,
-              double frequencyMHz,
-              double txPowerDbm) override = 0;
+    virtual void Send(Ptr<Packet> packet,
+                      LoraTxParameters txParams,
+                      double frequencyMHz,
+                      double txPowerDbm) = 0;
 
     // Implementation of LoraPhy's pure virtual functions
-    bool IsOnFrequency(double frequencyMHz) override;
+    virtual bool IsOnFrequency(double frequencyMHz);
 
     // Implementation of LoraPhy's pure virtual functions
-    bool IsTransmitting() override;
+    virtual bool IsTransmitting(void);
 
     /**
      * Set the frequency this EndDevice will listen on.
@@ -195,24 +196,24 @@ class EndDeviceLoraPhy : public LoraPhy
      *
      * \return The Spreading Factor we are listening for.
      */
-    uint8_t GetSpreadingFactor() const;
+    uint8_t GetSpreadingFactor(void);
 
     /**
      * Return the state this End Device is currently in.
      *
      * \return The state this EndDeviceLoraPhy is currently in.
      */
-    EndDeviceLoraPhy::State GetState();
+    EndDeviceLoraPhy::State GetState(void);
 
     /**
      * Switch to the STANDBY state.
      */
-    void SwitchToStandby();
+    void SwitchToStandby(void);
 
     /**
      * Switch to the SLEEP state.
      */
-    void SwitchToSleep();
+    void SwitchToSleep(void);
 
     /**
      * Add the input listener to the list of objects to be notified of PHY-level

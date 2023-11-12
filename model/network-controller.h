@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -42,11 +43,11 @@ class NetworkControllerComponent;
 class NetworkController : public Object
 {
   public:
-    static TypeId GetTypeId();
+    static TypeId GetTypeId(void);
 
     NetworkController();
     NetworkController(Ptr<NetworkStatus> networkStatus);
-    ~NetworkController() override;
+    virtual ~NetworkController();
 
     /**
      * Add a new NetworkControllerComponent

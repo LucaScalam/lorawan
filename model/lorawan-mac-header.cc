@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -40,7 +41,7 @@ LorawanMacHeader::~LorawanMacHeader()
 }
 
 TypeId
-LorawanMacHeader::GetTypeId()
+LorawanMacHeader::GetTypeId(void)
 {
     static TypeId tid =
         TypeId("LorawanMacHeader").SetParent<Header>().AddConstructor<LorawanMacHeader>();
@@ -48,13 +49,13 @@ LorawanMacHeader::GetTypeId()
 }
 
 TypeId
-LorawanMacHeader::GetInstanceTypeId() const
+LorawanMacHeader::GetInstanceTypeId(void) const
 {
     return GetTypeId();
 }
 
 uint32_t
-LorawanMacHeader::GetSerializedSize() const
+LorawanMacHeader::GetSerializedSize(void) const
 {
     NS_LOG_FUNCTION_NOARGS();
 
@@ -118,7 +119,7 @@ LorawanMacHeader::SetMType(enum MType mtype)
 }
 
 uint8_t
-LorawanMacHeader::GetMType() const
+LorawanMacHeader::GetMType(void) const
 {
     NS_LOG_FUNCTION_NOARGS();
 
@@ -136,7 +137,7 @@ LorawanMacHeader::SetMajor(uint8_t major)
 }
 
 uint8_t
-LorawanMacHeader::GetMajor() const
+LorawanMacHeader::GetMajor(void) const
 {
     NS_LOG_FUNCTION_NOARGS();
 
@@ -144,7 +145,7 @@ LorawanMacHeader::GetMajor() const
 }
 
 bool
-LorawanMacHeader::IsUplink() const
+LorawanMacHeader::IsUplink(void) const
 {
     NS_LOG_FUNCTION_NOARGS();
 
@@ -153,7 +154,7 @@ LorawanMacHeader::IsUplink() const
 }
 
 bool
-LorawanMacHeader::IsConfirmed() const
+LorawanMacHeader::IsConfirmed(void) const
 {
     NS_LOG_FUNCTION_NOARGS();
 

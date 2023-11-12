@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -31,7 +32,7 @@ NS_LOG_COMPONENT_DEFINE("LorawanMac");
 NS_OBJECT_ENSURE_REGISTERED(LorawanMac);
 
 TypeId
-LorawanMac::GetTypeId()
+LorawanMac::GetTypeId(void)
 {
     static TypeId tid =
         TypeId("ns3::LorawanMac")
@@ -72,13 +73,13 @@ LorawanMac::SetDevice(Ptr<NetDevice> device)
 }
 
 Ptr<NetDevice>
-LorawanMac::GetDevice()
+LorawanMac::GetDevice(void)
 {
     return m_device;
 }
 
 Ptr<LoraPhy>
-LorawanMac::GetPhy()
+LorawanMac::GetPhy(void)
 {
     return m_phy;
 }
@@ -96,7 +97,7 @@ LorawanMac::SetPhy(Ptr<LoraPhy> phy)
 }
 
 LogicalLoraChannelHelper
-LorawanMac::GetLogicalLoraChannelHelper()
+LorawanMac::GetLogicalLoraChannelHelper(void)
 {
     return m_channelHelper;
 }
@@ -179,7 +180,7 @@ LorawanMac::SetNPreambleSymbols(int nPreambleSymbols)
 }
 
 int
-LorawanMac::GetNPreambleSymbols() const
+LorawanMac::GetNPreambleSymbols(void)
 {
     return m_nPreambleSymbols;
 }

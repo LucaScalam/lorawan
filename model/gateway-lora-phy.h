@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -51,29 +52,29 @@ class LoraChannel;
 class GatewayLoraPhy : public LoraPhy
 {
   public:
-    static TypeId GetTypeId();
+    static TypeId GetTypeId(void);
 
     GatewayLoraPhy();
-    ~GatewayLoraPhy() override;
+    virtual ~GatewayLoraPhy();
 
-    void StartReceive(Ptr<Packet> packet,
-                      double rxPowerDbm,
-                      uint8_t sf,
-                      Time duration,
-                      double frequencyMHz) override = 0;
+    virtual void StartReceive(Ptr<Packet> packet,
+                              double rxPowerDbm,
+                              uint8_t sf,
+                              Time duration,
+                              double frequencyMHz) = 0;
 
-    void EndReceive(Ptr<Packet> packet, Ptr<LoraInterferenceHelper::Event> event) override = 0;
+    virtual void EndReceive(Ptr<Packet> packet, Ptr<LoraInterferenceHelper::Event> event) = 0;
 
-    void Send(Ptr<Packet> packet,
-              LoraTxParameters txParams,
-              double frequencyMHz,
-              double txPowerDbm) override = 0;
+    virtual void Send(Ptr<Packet> packet,
+                      LoraTxParameters txParams,
+                      double frequencyMHz,
+                      double txPowerDbm) = 0;
 
     virtual void TxFinished(Ptr<Packet> packet);
 
-    bool IsTransmitting() override;
+    bool IsTransmitting(void);
 
-    bool IsOnFrequency(double frequencyMHz) override;
+    virtual bool IsOnFrequency(double frequencyMHz);
 
     /**
      * Add a reception path, locked on a specific frequency.
@@ -85,7 +86,7 @@ class GatewayLoraPhy : public LoraPhy
      *
      * This method deletes all currently available ReceptionPath objects.
      */
-    void ResetReceptionPaths();
+    void ResetReceptionPaths(void);
 
     /**
      * Add a frequency to the list of frequencies we are listening to.
@@ -121,7 +122,7 @@ class GatewayLoraPhy : public LoraPhy
          *
          * \return True if its current state is free, false if it's currently locked.
          */
-        bool IsAvailable() const;
+        bool IsAvailable(void);
 
         /**
          * Set this reception path as available.
@@ -129,7 +130,7 @@ class GatewayLoraPhy : public LoraPhy
          * This function sets the m_available variable as true, and deletes the
          * LoraInterferenceHelper Event this ReceivePath was previously locked on.
          */
-        void Free();
+        void Free(void);
 
         /**
          * Set this reception path as not available and lock it on the
@@ -152,13 +153,13 @@ class GatewayLoraPhy : public LoraPhy
          * \returns 0 if no event is currently being received, a pointer to
          * the event otherwise.
          */
-        Ptr<LoraInterferenceHelper::Event> GetEvent();
+        Ptr<LoraInterferenceHelper::Event> GetEvent(void);
 
         /**
          * Get the EventId of the EndReceive call associated to this ReceptionPath's
          * packet.
          */
-        EventId GetEndReceive();
+        EventId GetEndReceive(void);
 
         /**
          * Set the EventId of the EndReceive call associated to this ReceptionPath's

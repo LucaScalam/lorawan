@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -43,27 +44,27 @@ class LoraChannel;
 class SimpleEndDeviceLoraPhy : public EndDeviceLoraPhy
 {
   public:
-    static TypeId GetTypeId();
+    static TypeId GetTypeId(void);
 
     // Constructor and destructor
     SimpleEndDeviceLoraPhy();
-    ~SimpleEndDeviceLoraPhy() override;
+    virtual ~SimpleEndDeviceLoraPhy();
 
     // Implementation of EndDeviceLoraPhy's pure virtual functions
-    void StartReceive(Ptr<Packet> packet,
-                      double rxPowerDbm,
-                      uint8_t sf,
-                      Time duration,
-                      double frequencyMHz) override;
+    virtual void StartReceive(Ptr<Packet> packet,
+                              double rxPowerDbm,
+                              uint8_t sf,
+                              Time duration,
+                              double frequencyMHz);
 
     // Implementation of LoraPhy's pure virtual functions
-    void EndReceive(Ptr<Packet> packet, Ptr<LoraInterferenceHelper::Event> event) override;
+    virtual void EndReceive(Ptr<Packet> packet, Ptr<LoraInterferenceHelper::Event> event);
 
     // Implementation of LoraPhy's pure virtual functions
-    void Send(Ptr<Packet> packet,
-              LoraTxParameters txParams,
-              double frequencyMHz,
-              double txPowerDbm) override;
+    virtual void Send(Ptr<Packet> packet,
+                      LoraTxParameters txParams,
+                      double frequencyMHz,
+                      double txPowerDbm);
 
   private:
 };

@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -36,7 +37,7 @@ NS_LOG_COMPONENT_DEFINE("SimpleEndDeviceLoraPhy");
 NS_OBJECT_ENSURE_REGISTERED(SimpleEndDeviceLoraPhy);
 
 TypeId
-SimpleEndDeviceLoraPhy::GetTypeId()
+SimpleEndDeviceLoraPhy::GetTypeId(void)
 {
     static TypeId tid = TypeId("ns3::SimpleEndDeviceLoraPhy")
                             .SetParent<EndDeviceLoraPhy>()

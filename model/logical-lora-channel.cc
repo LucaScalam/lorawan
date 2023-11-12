@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -31,7 +32,7 @@ NS_LOG_COMPONENT_DEFINE("LogicalLoraChannel");
 NS_OBJECT_ENSURE_REGISTERED(LogicalLoraChannel);
 
 TypeId
-LogicalLoraChannel::GetTypeId()
+LogicalLoraChannel::GetTypeId(void)
 {
     static TypeId tid =
         TypeId("ns3::LogicalLoraChannel").SetParent<Object>().SetGroupName("lorawan");
@@ -69,7 +70,7 @@ LogicalLoraChannel::LogicalLoraChannel(double frequency, uint8_t minDataRate, ui
 }
 
 double
-LogicalLoraChannel::GetFrequency() const
+LogicalLoraChannel::GetFrequency(void) const
 {
     return m_frequency;
 }
@@ -87,31 +88,31 @@ LogicalLoraChannel::SetMaximumDataRate(uint8_t maxDataRate)
 }
 
 uint8_t
-LogicalLoraChannel::GetMinimumDataRate() const
+LogicalLoraChannel::GetMinimumDataRate(void)
 {
     return m_minDataRate;
 }
 
 uint8_t
-LogicalLoraChannel::GetMaximumDataRate() const
+LogicalLoraChannel::GetMaximumDataRate(void)
 {
     return m_maxDataRate;
 }
 
 void
-LogicalLoraChannel::SetEnabledForUplink()
+LogicalLoraChannel::SetEnabledForUplink(void)
 {
     m_enabledForUplink = true;
 }
 
 void
-LogicalLoraChannel::DisableForUplink()
+LogicalLoraChannel::DisableForUplink(void)
 {
     m_enabledForUplink = false;
 }
 
 bool
-LogicalLoraChannel::IsEnabledForUplink() const
+LogicalLoraChannel::IsEnabledForUplink(void)
 {
     return m_enabledForUplink;
 }

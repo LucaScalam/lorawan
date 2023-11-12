@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -45,13 +46,13 @@ class LoraChannel;
  */
 struct LoraTxParameters
 {
-    uint8_t sf = 7;                              //!< Spreading Factor
-    bool headerDisabled = false;                 //!< Whether to use implicit header mode
-    uint8_t codingRate = 1;                      //!< Code rate (obtained as 4/(codingRate+4))
-    double bandwidthHz = 125000;                 //!< Bandwidth in Hz
-    uint32_t nPreamble = 8;                      //!< Number of preamble symbols
-    bool crcEnabled = true;                      //!< Whether Cyclic Redundancy Check is enabled
-    bool lowDataRateOptimizationEnabled = false; //!< Whether Low Data Rate Optimization is enabled
+    uint8_t sf = 7;                          //!< Spreading Factor
+    bool headerDisabled = 0;                 //!< Whether to use implicit header mode
+    uint8_t codingRate = 1;                  //!< Code rate (obtained as 4/(codingRate+4))
+    double bandwidthHz = 125000;             //!< Bandwidth in Hz
+    uint32_t nPreamble = 8;                  //!< Number of preamble symbols
+    bool crcEnabled = 1;                     //!< Whether Cyclic Redundancy Check is enabled
+    bool lowDataRateOptimizationEnabled = 0; //!< Whether Low Data Rate Optimization is enabled
 };
 
 /**
@@ -74,13 +75,13 @@ class LoraPhy : public Object
 {
   public:
     // TypeId
-    static TypeId GetTypeId();
+    static TypeId GetTypeId(void);
 
     /**
      * Constructor and destructor
      */
     LoraPhy();
-    ~LoraPhy() override;
+    virtual ~LoraPhy();
 
     /**
      * Type definition for a callback for when a packet is correctly received.
@@ -157,7 +158,7 @@ class LoraPhy : public Object
      * \returns true if the device is currently transmitting a packet, false
      * otherwise.
      */
-    virtual bool IsTransmitting() = 0;
+    virtual bool IsTransmitting(void) = 0;
 
     /**
      * Whether this device is listening on the specified frequency or not.
@@ -221,14 +222,14 @@ class LoraPhy : public Object
      *
      * \return The LoraChannel instance this PHY transmits on.
      */
-    Ptr<LoraChannel> GetChannel() const;
+    Ptr<LoraChannel> GetChannel(void) const;
 
     /**
      * Get the NetDevice associated to this PHY.
      *
      * \return The NetDevice associated to this PHY.
      */
-    Ptr<NetDevice> GetDevice() const;
+    Ptr<NetDevice> GetDevice(void) const;
 
     /**
      * Set the NetDevice that owns this PHY.
@@ -250,7 +251,7 @@ class LoraPhy : public Object
      * transmitted.
      *
      * Besides from the ones saved in LoraTxParameters, the packet's payload
-     * (obtained through a GetSize () call to account for the presence of Headers
+     * (obtained through a GetSize () call to accout for the presence of Headers
      * and Trailers, too) also influences the packet transmit time.
      *
      * \param packet The packet that needs to be transmitted.

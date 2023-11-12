@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -107,7 +108,7 @@ class CorrelatedShadowingPropagationLossModel : public PropagationLossModel
         static const double m_kInv[4][4];
     };
 
-    static TypeId GetTypeId();
+    static TypeId GetTypeId(void);
 
     /**
      * Constructor.
@@ -122,14 +123,14 @@ class CorrelatedShadowingPropagationLossModel : public PropagationLossModel
     /**
      * Get the correlation distance that is currently being used.
      */
-    double GetCorrelationDistance();
+    double GetCorrelationDistance(void);
 
   private:
-    double DoCalcRxPower(double txPowerDbm,
-                         Ptr<MobilityModel> a,
-                         Ptr<MobilityModel> b) const override;
+    virtual double DoCalcRxPower(double txPowerDbm,
+                                 Ptr<MobilityModel> a,
+                                 Ptr<MobilityModel> b) const;
 
-    int64_t DoAssignStreams(int64_t stream) override;
+    virtual int64_t DoAssignStreams(int64_t stream);
 
     double m_correlationDistance; //!< The correlation distance for the ShadowingMap
 

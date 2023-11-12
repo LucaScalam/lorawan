@@ -38,12 +38,7 @@ namespace ns3
 {
 namespace lorawan
 {
-    // struct StructTest
-    // {
-    //     uint8_t test_1;
-    //     // Whether or not this device needs a reply
-    //     bool test_2 = false;
-    // };
+
 /**
  * Class representing the MAC layer of a Class A LoRaWAN device.
  */
@@ -326,7 +321,6 @@ class ClassAEndDeviceLorawanMac : public EndDeviceLorawanMac
     uint8_t m_pingSlotDataRate;
 
     Ptr<StructTest> m_offsetData;
-
 
 }; /* ClassAEndDeviceLorawanMac */
 } /* namespace lorawan */

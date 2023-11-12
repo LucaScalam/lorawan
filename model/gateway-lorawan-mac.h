@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -31,25 +32,25 @@ namespace lorawan
 class GatewayLorawanMac : public LorawanMac
 {
   public:
-    static TypeId GetTypeId();
+    static TypeId GetTypeId(void);
 
     GatewayLorawanMac();
-    ~GatewayLorawanMac() override;
+    virtual ~GatewayLorawanMac();
 
     // Implementation of the LorawanMac interface
-    void Send(Ptr<Packet> packet) override;
+    virtual void Send(Ptr<Packet> packet);
 
     // Implementation of the LorawanMac interface
-    bool IsTransmitting();
+    bool IsTransmitting(void);
 
     // Implementation of the LorawanMac interface
-    void Receive(Ptr<const Packet> packet) override;
+    virtual void Receive(Ptr<const Packet> packet);
 
     // Implementation of the LorawanMac interface
-    void FailedReception(Ptr<const Packet> packet) override;
+    virtual void FailedReception(Ptr<const Packet> packet);
 
     // Implementation of the LorawanMac interface
-    void TxFinished(Ptr<const Packet> packet) override;
+    virtual void TxFinished(Ptr<const Packet> packet);
 
     /**
      * Return the next time at which we will be able to transmit.

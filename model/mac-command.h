@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -65,10 +66,10 @@ enum MacCommandType
 class MacCommand : public Object
 {
   public:
-    static TypeId GetTypeId();
+    static TypeId GetTypeId(void);
 
     MacCommand();
-    ~MacCommand() override;
+    virtual ~MacCommand();
 
     /**
      * Serialize the contents of this MAC command into a buffer, according to the
@@ -98,14 +99,14 @@ class MacCommand : public Object
      *
      * \return The number of bytes the MAC command takes up.
      */
-    virtual uint8_t GetSerializedSize() const;
+    virtual uint8_t GetSerializedSize(void) const;
 
     /**
      * Get the commandType of this MAC command.
      *
      * \return The type of MAC command this object represents.
      */
-    virtual enum MacCommandType GetCommandType() const;
+    virtual enum MacCommandType GetCommandType(void) const;
 
     /**
      * Get the CID that corresponds to this MAC command.
@@ -135,10 +136,10 @@ class LinkCheckReq : public MacCommand
 {
   public:
     LinkCheckReq();
-    ~LinkCheckReq() override;
-    void Serialize(Buffer::Iterator& start) const override;
-    uint8_t Deserialize(Buffer::Iterator& start) override;
-    void Print(std::ostream& os) const override;
+    ~LinkCheckReq();
+    virtual void Serialize(Buffer::Iterator& start) const;
+    virtual uint8_t Deserialize(Buffer::Iterator& start);
+    virtual void Print(std::ostream& os) const;
 };
 
 /**
@@ -153,9 +154,9 @@ class LinkCheckAns : public MacCommand
     LinkCheckAns();
     LinkCheckAns(uint8_t margin, uint8_t gwCnt);
 
-    void Serialize(Buffer::Iterator& start) const override;
-    uint8_t Deserialize(Buffer::Iterator& start) override;
-    void Print(std::ostream& os) const override;
+    virtual void Serialize(Buffer::Iterator& start) const;
+    virtual uint8_t Deserialize(Buffer::Iterator& start);
+    virtual void Print(std::ostream& os) const;
 
     /**
      * Set the demodulation margin value.
@@ -169,7 +170,7 @@ class LinkCheckAns : public MacCommand
      *
      * \return The demodulation margin value.
      */
-    uint8_t GetMargin() const;
+    uint8_t GetMargin(void) const;
 
     /**
      * Set the gateway count value.
@@ -183,12 +184,12 @@ class LinkCheckAns : public MacCommand
      *
      * \return The gateway count value.
      */
-    uint8_t GetGwCnt() const;
+    uint8_t GetGwCnt(void) const;
 
     /**
      * Increment this MacCommand's gwCnt value.
      */
-    void IncrementGwCnt();
+    void IncrementGwCnt(void);
 
   private:
     /**
@@ -220,16 +221,16 @@ class LinkAdrReq : public MacCommand
                uint8_t chMaskCntl,
                uint8_t nbRep);
 
-    void Serialize(Buffer::Iterator& start) const override;
-    uint8_t Deserialize(Buffer::Iterator& start) override;
-    void Print(std::ostream& os) const override;
+    virtual void Serialize(Buffer::Iterator& start) const;
+    virtual uint8_t Deserialize(Buffer::Iterator& start);
+    virtual void Print(std::ostream& os) const;
 
     /**
      * Return the data rate prescribed by this MAC command.
      *
      * \return An unsigned 8-bit integer containing the data rate.
      */
-    uint8_t GetDataRate();
+    uint8_t GetDataRate(void);
 
     /**
      * Get the transmission power prescribed by this MAC command.
@@ -240,7 +241,7 @@ class LinkAdrReq : public MacCommand
      *
      * \return The TX power, encoded as an unsigned 8-bit integer.
      */
-    uint8_t GetTxPower();
+    uint8_t GetTxPower(void);
 
     /**
      * Get the list of enabled channels. This method takes the 16-bit channel mask
@@ -248,14 +249,14 @@ class LinkAdrReq : public MacCommand
      *
      * \return The list of enabled channels.
      */
-    std::list<int> GetEnabledChannelsList();
+    std::list<int> GetEnabledChannelsList(void);
 
     /**
      * Get the number of repetitions prescribed by this MAC command.
      *
      * \return The number of repetitions.
      */
-    int GetRepetitions();
+    int GetRepetitions(void);
 
   private:
     uint8_t m_dataRate;
@@ -277,9 +278,9 @@ class LinkAdrAns : public MacCommand
 
     LinkAdrAns(bool powerAck, bool dataRateAck, bool channelMaskAck);
 
-    void Serialize(Buffer::Iterator& start) const override;
-    uint8_t Deserialize(Buffer::Iterator& start) override;
-    void Print(std::ostream& os) const override;
+    virtual void Serialize(Buffer::Iterator& start) const;
+    virtual uint8_t Deserialize(Buffer::Iterator& start);
+    virtual void Print(std::ostream& os) const;
 
   private:
     bool m_powerAck;
@@ -305,16 +306,16 @@ class DutyCycleReq : public MacCommand
      */
     DutyCycleReq(uint8_t dutyCycle);
 
-    void Serialize(Buffer::Iterator& start) const override;
-    uint8_t Deserialize(Buffer::Iterator& start) override;
-    void Print(std::ostream& os) const override;
+    virtual void Serialize(Buffer::Iterator& start) const;
+    virtual uint8_t Deserialize(Buffer::Iterator& start);
+    virtual void Print(std::ostream& os) const;
 
     /**
      * Get the maximum duty cycle prescribed by this Mac command, in fraction form.
      *
      * \return The maximum duty cycle.
      */
-    double GetMaximumAllowedDutyCycle() const;
+    double GetMaximumAllowedDutyCycle(void) const;
 
   private:
     uint8_t m_maxDCycle;
@@ -330,9 +331,9 @@ class DutyCycleAns : public MacCommand
   public:
     DutyCycleAns();
 
-    void Serialize(Buffer::Iterator& start) const override;
-    uint8_t Deserialize(Buffer::Iterator& start) override;
-    void Print(std::ostream& os) const override;
+    virtual void Serialize(Buffer::Iterator& start) const;
+    virtual uint8_t Deserialize(Buffer::Iterator& start);
+    virtual void Print(std::ostream& os) const;
 };
 
 /**
@@ -352,30 +353,30 @@ class RxParamSetupReq : public MacCommand
      */
     RxParamSetupReq(uint8_t rx1DrOffset, uint8_t rx2DataRate, double frequency);
 
-    void Serialize(Buffer::Iterator& start) const override;
-    uint8_t Deserialize(Buffer::Iterator& start) override;
-    void Print(std::ostream& os) const override;
+    virtual void Serialize(Buffer::Iterator& start) const;
+    virtual uint8_t Deserialize(Buffer::Iterator& start);
+    virtual void Print(std::ostream& os) const;
 
     /**
      * Get this command's Rx1DrOffset parameter.
      *
      * \return The Rx1DrOffset parameter.
      */
-    uint8_t GetRx1DrOffset();
+    uint8_t GetRx1DrOffset(void);
 
     /**
      * Get this command's Rx2DataRate parameter.
      *
      * \return The Rx2DataRate parameter.
      */
-    uint8_t GetRx2DataRate();
+    uint8_t GetRx2DataRate(void);
 
     /**
      * Get this command's frequency.
      *
      * \return The frequency parameter, in Hz.
      */
-    double GetFrequency();
+    double GetFrequency(void);
 
   private:
     uint8_t m_rx1DrOffset;
@@ -399,9 +400,9 @@ class RxParamSetupAns : public MacCommand
      */
     RxParamSetupAns(bool rx1DrOffsetAck, bool rx2DataRateAck, bool channelAck);
 
-    void Serialize(Buffer::Iterator& start) const override;
-    uint8_t Deserialize(Buffer::Iterator& start) override;
-    void Print(std::ostream& os) const override;
+    virtual void Serialize(Buffer::Iterator& start) const;
+    virtual uint8_t Deserialize(Buffer::Iterator& start);
+    virtual void Print(std::ostream& os) const;
 
   private:
     bool m_rx1DrOffsetAck;
@@ -417,9 +418,9 @@ class DevStatusReq : public MacCommand
   public:
     DevStatusReq();
 
-    void Serialize(Buffer::Iterator& start) const override;
-    uint8_t Deserialize(Buffer::Iterator& start) override;
-    void Print(std::ostream& os) const override;
+    virtual void Serialize(Buffer::Iterator& start) const;
+    virtual uint8_t Deserialize(Buffer::Iterator& start);
+    virtual void Print(std::ostream& os) const;
 };
 
 /**
@@ -437,23 +438,23 @@ class DevStatusAns : public MacCommand
      */
     DevStatusAns(uint8_t battery, uint8_t margin);
 
-    void Serialize(Buffer::Iterator& start) const override;
-    uint8_t Deserialize(Buffer::Iterator& start) override;
-    void Print(std::ostream& os) const override;
+    virtual void Serialize(Buffer::Iterator& start) const;
+    virtual uint8_t Deserialize(Buffer::Iterator& start);
+    virtual void Print(std::ostream& os) const;
 
     /**
      * Get the battery information contained in this MAC command.
      *
      * \return The battery level.
      */
-    uint8_t GetBattery() const;
+    uint8_t GetBattery(void);
 
     /**
      * Get the demodulation margin contained in this MAC command.
      *
      * \return The margin.
      */
-    uint8_t GetMargin() const;
+    uint8_t GetMargin(void);
 
   private:
     uint8_t m_battery;
@@ -478,14 +479,14 @@ class NewChannelReq : public MacCommand
      */
     NewChannelReq(uint8_t chIndex, double frequency, uint8_t minDataRate, uint8_t maxDataRate);
 
-    void Serialize(Buffer::Iterator& start) const override;
-    uint8_t Deserialize(Buffer::Iterator& start) override;
-    void Print(std::ostream& os) const override;
+    virtual void Serialize(Buffer::Iterator& start) const;
+    virtual uint8_t Deserialize(Buffer::Iterator& start);
+    virtual void Print(std::ostream& os) const;
 
-    uint8_t GetChannelIndex() const;
-    double GetFrequency() const;
-    uint8_t GetMinDataRate() const;
-    uint8_t GetMaxDataRate() const;
+    uint8_t GetChannelIndex(void);
+    double GetFrequency(void);
+    uint8_t GetMinDataRate(void);
+    uint8_t GetMaxDataRate(void);
 
   private:
     uint8_t m_chIndex;
@@ -512,9 +513,9 @@ class NewChannelAns : public MacCommand
      */
     NewChannelAns(bool dataRateRangeOk, bool channelFrequencyOk);
 
-    void Serialize(Buffer::Iterator& start) const override;
-    uint8_t Deserialize(Buffer::Iterator& start) override;
-    void Print(std::ostream& os) const override;
+    virtual void Serialize(Buffer::Iterator& start) const;
+    virtual uint8_t Deserialize(Buffer::Iterator& start);
+    virtual void Print(std::ostream& os) const;
 
   private:
     bool m_dataRateRangeOk;
@@ -536,16 +537,16 @@ class RxTimingSetupReq : public MacCommand
      */
     RxTimingSetupReq(uint8_t delay);
 
-    void Serialize(Buffer::Iterator& start) const override;
-    uint8_t Deserialize(Buffer::Iterator& start) override;
-    void Print(std::ostream& os) const override;
+    virtual void Serialize(Buffer::Iterator& start) const;
+    virtual uint8_t Deserialize(Buffer::Iterator& start);
+    virtual void Print(std::ostream& os) const;
 
     /**
      * Get the first window delay as a Time instance.
      *
      * \return The delay.
      */
-    Time GetDelay();
+    Time GetDelay(void);
 
   private:
     uint8_t m_delay;
@@ -561,9 +562,9 @@ class RxTimingSetupAns : public MacCommand
   public:
     RxTimingSetupAns();
 
-    void Serialize(Buffer::Iterator& start) const override;
-    uint8_t Deserialize(Buffer::Iterator& start) override;
-    void Print(std::ostream& os) const override;
+    virtual void Serialize(Buffer::Iterator& start) const;
+    virtual uint8_t Deserialize(Buffer::Iterator& start);
+    virtual void Print(std::ostream& os) const;
 
   private:
 };
@@ -576,9 +577,9 @@ class TxParamSetupAns : public MacCommand
   public:
     TxParamSetupAns();
 
-    void Serialize(Buffer::Iterator& start) const override;
-    uint8_t Deserialize(Buffer::Iterator& start) override;
-    void Print(std::ostream& os) const override;
+    virtual void Serialize(Buffer::Iterator& start) const;
+    virtual uint8_t Deserialize(Buffer::Iterator& start);
+    virtual void Print(std::ostream& os) const;
 
   private:
 };
@@ -591,9 +592,9 @@ class TxParamSetupReq : public MacCommand
   public:
     TxParamSetupReq();
 
-    void Serialize(Buffer::Iterator& start) const override;
-    uint8_t Deserialize(Buffer::Iterator& start) override;
-    void Print(std::ostream& os) const override;
+    virtual void Serialize(Buffer::Iterator& start) const;
+    virtual uint8_t Deserialize(Buffer::Iterator& start);
+    virtual void Print(std::ostream& os) const;
 
   private:
 };
@@ -606,9 +607,9 @@ class DlChannelAns : public MacCommand
   public:
     DlChannelAns();
 
-    void Serialize(Buffer::Iterator& start) const override;
-    uint8_t Deserialize(Buffer::Iterator& start) override;
-    void Print(std::ostream& os) const override;
+    virtual void Serialize(Buffer::Iterator& start) const;
+    virtual uint8_t Deserialize(Buffer::Iterator& start);
+    virtual void Print(std::ostream& os) const;
 
   private:
 };

@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -40,9 +41,9 @@ class Forwarder : public Application
 {
   public:
     Forwarder();
-    ~Forwarder() override;
+    ~Forwarder();
 
-    static TypeId GetTypeId();
+    static TypeId GetTypeId(void);
 
     /**
      * Sets the device to use to communicate with the EDs.
@@ -83,12 +84,12 @@ class Forwarder : public Application
     /**
      * Start the application
      */
-    void StartApplication() override;
+    void StartApplication(void);
 
     /**
      * Stop the application
      */
-    void StopApplication() override;
+    void StopApplication(void);
 
   private:
     Ptr<LoraNetDevice> m_loraNetDevice; //!< Pointer to the node's LoraNetDevice

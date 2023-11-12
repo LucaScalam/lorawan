@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -29,7 +30,7 @@ namespace lorawan
 NS_LOG_COMPONENT_DEFINE("LoraDeviceAddressGenerator");
 
 TypeId
-LoraDeviceAddressGenerator::GetTypeId()
+LoraDeviceAddressGenerator::GetTypeId(void)
 {
     static TypeId tid = TypeId("ns3::LoraDeviceAddressGenerator")
                             .SetParent<Object>()
@@ -47,7 +48,7 @@ LoraDeviceAddressGenerator::LoraDeviceAddressGenerator(const uint8_t nwkId, cons
 }
 
 LoraDeviceAddress
-LoraDeviceAddressGenerator::NextNetwork()
+LoraDeviceAddressGenerator::NextNetwork(void)
 {
     NS_LOG_FUNCTION_NOARGS();
 
@@ -58,7 +59,7 @@ LoraDeviceAddressGenerator::NextNetwork()
 }
 
 LoraDeviceAddress
-LoraDeviceAddressGenerator::NextAddress()
+LoraDeviceAddressGenerator::NextAddress(void)
 {
     NS_LOG_FUNCTION_NOARGS();
 
@@ -69,7 +70,7 @@ LoraDeviceAddressGenerator::NextAddress()
 }
 
 LoraDeviceAddress
-LoraDeviceAddressGenerator::GetNextAddress()
+LoraDeviceAddressGenerator::GetNextAddress(void)
 {
     NS_LOG_FUNCTION_NOARGS();
 

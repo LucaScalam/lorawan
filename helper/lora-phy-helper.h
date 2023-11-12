@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -70,7 +71,7 @@ class LoraPhyHelper
      */
     void SetDeviceType(enum DeviceType dt);
 
-    TypeId GetDeviceType() const;
+    TypeId GetDeviceType(void) const;
 
     /**
      * Set an attribute of the underlying PHY object.
@@ -81,7 +82,7 @@ class LoraPhyHelper
     void Set(std::string name, const AttributeValue& v);
 
     /**
-     * Create a LoraPhy and connect it to a device on a node.
+     * Crate a LoraPhy and connect it to a device on a node.
      *
      * \param node the node on which we wish to create a wifi PHY.
      * \param device the device within which this PHY will be created.

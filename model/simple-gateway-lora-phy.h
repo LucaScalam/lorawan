@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -44,23 +45,23 @@ class LoraChannel;
 class SimpleGatewayLoraPhy : public GatewayLoraPhy
 {
   public:
-    static TypeId GetTypeId();
+    static TypeId GetTypeId(void);
 
     SimpleGatewayLoraPhy();
-    ~SimpleGatewayLoraPhy() override;
+    virtual ~SimpleGatewayLoraPhy();
 
-    void StartReceive(Ptr<Packet> packet,
-                      double rxPowerDbm,
-                      uint8_t sf,
-                      Time duration,
-                      double frequencyMHz) override;
+    virtual void StartReceive(Ptr<Packet> packet,
+                              double rxPowerDbm,
+                              uint8_t sf,
+                              Time duration,
+                              double frequencyMHz);
 
-    void EndReceive(Ptr<Packet> packet, Ptr<LoraInterferenceHelper::Event> event) override;
+    virtual void EndReceive(Ptr<Packet> packet, Ptr<LoraInterferenceHelper::Event> event);
 
-    void Send(Ptr<Packet> packet,
-              LoraTxParameters txParams,
-              double frequencyMHz,
-              double txPowerDbm) override;
+    virtual void Send(Ptr<Packet> packet,
+                      LoraTxParameters txParams,
+                      double frequencyMHz,
+                      double txPowerDbm);
 
   private:
 };

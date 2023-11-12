@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -36,14 +37,14 @@ class OneShotSender : public Application
   public:
     OneShotSender();
     OneShotSender(Time sendTime);
-    ~OneShotSender() override;
+    ~OneShotSender();
 
-    static TypeId GetTypeId();
+    static TypeId GetTypeId(void);
 
     /**
      * Send a packet using the LoraNetDevice's Send method.
      */
-    void SendPacket();
+    void SendPacket(void);
 
     /**
      * Set the time at which this app will send a packet.
@@ -53,12 +54,12 @@ class OneShotSender : public Application
     /**
      * Start the application by scheduling the first SendPacket event.
      */
-    void StartApplication() override;
+    void StartApplication(void);
 
     /**
      * Stop the application.
      */
-    void StopApplication() override;
+    void StopApplication(void);
 
   private:
     /**

@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -46,18 +47,18 @@ class LoraFrameHeader : public Header
 {
   public:
     LoraFrameHeader();
-    ~LoraFrameHeader() override;
+    ~LoraFrameHeader();
 
     // Methods inherited from Header
-    static TypeId GetTypeId();
-    TypeId GetInstanceTypeId() const override;
+    static TypeId GetTypeId(void);
+    virtual TypeId GetInstanceTypeId(void) const;
 
     /**
      * Return the size required for serialization of this header
      *
      * \return The serialized size in bytes
      */
-    uint32_t GetSerializedSize() const override;
+    virtual uint32_t GetSerializedSize(void) const;
 
     /**
      * Serialize the header.
@@ -67,7 +68,7 @@ class LoraFrameHeader : public Header
      * \param start A pointer to the buffer that will be filled with the
      * serialization.
      */
-    void Serialize(Buffer::Iterator start) const override;
+    virtual void Serialize(Buffer::Iterator start) const;
 
     /**
      * Deserialize the contents of the buffer into a LoraFrameHeader object.
@@ -75,14 +76,14 @@ class LoraFrameHeader : public Header
      * \param start A pointer to the buffer we need to deserialize.
      * \return The number of consumed bytes.
      */
-    uint32_t Deserialize(Buffer::Iterator start) override;
+    virtual uint32_t Deserialize(Buffer::Iterator start);
 
     /**
      * Print the header in a human-readable format.
      *
      * \param os The std::ostream on which to print the header.
      */
-    void Print(std::ostream& os) const override;
+    virtual void Print(std::ostream& os) const;
 
     /**
      * State that this is an uplink message.
@@ -90,7 +91,7 @@ class LoraFrameHeader : public Header
      * This method needs to be called at least once before any serialization or
      * deserialization.
      */
-    void SetAsUplink();
+    void SetAsUplink(void);
 
     /**
      * State that this is a downlink message.
@@ -98,7 +99,7 @@ class LoraFrameHeader : public Header
      * This method needs to be called at least once before any serialization or
      * deserialization.
      */
-    void SetAsDownlink();
+    void SetAsDownlink(void);
 
     /**
      * Set the FPort value.
@@ -112,7 +113,7 @@ class LoraFrameHeader : public Header
      *
      * \return The FPort value.
      */
-    uint8_t GetFPort() const;
+    uint8_t GetFPort(void) const;
 
     /**
      * Set the address.
@@ -126,7 +127,7 @@ class LoraFrameHeader : public Header
      *
      * \return The address value stored in this header.
      */
-    LoraDeviceAddress GetAddress() const;
+    LoraDeviceAddress GetAddress(void) const;
 
     /**
      * Set the Adr value.
@@ -140,7 +141,7 @@ class LoraFrameHeader : public Header
      *
      * \return The Adr value.
      */
-    bool GetAdr() const;
+    bool GetAdr(void) const;
 
     /**
      * Set the AdrAckReq value.
@@ -154,7 +155,7 @@ class LoraFrameHeader : public Header
      *
      * \return The AdrAckReq value.
      */
-    bool GetAdrAckReq() const;
+    bool GetAdrAckReq(void) const;
 
     /**
      * Set the Ack bit.
@@ -168,7 +169,7 @@ class LoraFrameHeader : public Header
      *
      * \return True if the ACK bit is set, false otherwise.
      */
-    bool GetAck() const;
+    bool GetAck(void) const;
 
     /**
      * Set the FPending value.
@@ -182,7 +183,7 @@ class LoraFrameHeader : public Header
      *
      * \return The FPending value.
      */
-    bool GetFPending() const;
+    bool GetFPending(void) const;
 
     /**
      * Get the FOptsLen value.
@@ -192,7 +193,7 @@ class LoraFrameHeader : public Header
      *
      * \return The FOptsLen value.
      */
-    uint8_t GetFOptsLen() const;
+    uint8_t GetFOptsLen(void) const;
 
     /**
      * Set the FCnt value
@@ -205,19 +206,19 @@ class LoraFrameHeader : public Header
      *
      * \return The FCnt value.
      */
-    uint16_t GetFCnt() const;
+    uint16_t GetFCnt(void) const;
 
     /**
      * Return a pointer to a MacCommand, or 0 if the MacCommand does not exist
      * in this header.
      */
     template <typename T>
-    inline Ptr<T> GetMacCommand();
+    inline Ptr<T> GetMacCommand(void);
 
     /**
      * Add a LinkCheckReq command.
      */
-    void AddLinkCheckReq();
+    void AddLinkCheckReq(void);
 
     /**
      * Add a LinkCheckAns command.
@@ -265,7 +266,7 @@ class LoraFrameHeader : public Header
     /**
      * Add a DutyCycleAns command.
      */
-    void AddDutyCycleAns();
+    void AddDutyCycleAns(void);
 
     /**
      * Add a RxParamSetupReq command.
@@ -297,7 +298,7 @@ class LoraFrameHeader : public Header
     /**
      * Return a list of pointers to all the MAC commands saved in this header.
      */
-    std::list<Ptr<MacCommand>> GetCommands();
+    std::list<Ptr<MacCommand>> GetCommands(void);
 
     /**
      * Add a predefined command to the list.
@@ -343,7 +344,7 @@ LoraFrameHeader::GetMacCommand()
     }
 
     // If no command was found, return 0
-    return nullptr;
+    return 0;
 }
 } // namespace lorawan
 

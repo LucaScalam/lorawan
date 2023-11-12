@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -29,7 +30,7 @@ namespace lorawan
 NS_LOG_COMPONENT_DEFINE("GatewayStatus");
 
 TypeId
-GatewayStatus::GetTypeId()
+GatewayStatus::GetTypeId(void)
 {
     static TypeId tid =
         TypeId("ns3::GatewayStatus").AddConstructor<GatewayStatus>().SetGroupName("lorawan");
@@ -86,7 +87,7 @@ GatewayStatus::SetNetDevice(Ptr<NetDevice> netDevice)
 }
 
 Ptr<GatewayLorawanMac>
-GatewayStatus::GetGatewayMac()
+GatewayStatus::GetGatewayMac(void)
 {
     return m_gatewayMac;
 }

@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2018 University of Padova
  *
@@ -29,7 +30,7 @@ NS_LOG_COMPONENT_DEFINE("NetworkControllerComponent");
 NS_OBJECT_ENSURE_REGISTERED(NetworkControllerComponent);
 
 TypeId
-NetworkControllerComponent::GetTypeId()
+NetworkControllerComponent::GetTypeId(void)
 {
     static TypeId tid =
         TypeId("ns3::NetworkControllerComponent").SetParent<Object>().SetGroupName("lorawan");
@@ -49,7 +50,7 @@ NetworkControllerComponent::~NetworkControllerComponent()
 // ConfirmedMessagesComponent //
 ////////////////////////////////
 TypeId
-ConfirmedMessagesComponent::GetTypeId()
+ConfirmedMessagesComponent::GetTypeId(void)
 {
     static TypeId tid = TypeId("ns3::ConfirmedMessagesComponent")
                             .SetParent<NetworkControllerComponent>()
@@ -127,7 +128,7 @@ ConfirmedMessagesComponent::OnFailedReply(Ptr<EndDeviceStatus> status,
 // LinkCheckComponent //
 ////////////////////////
 TypeId
-LinkCheckComponent::GetTypeId()
+LinkCheckComponent::GetTypeId(void)
 {
     static TypeId tid = TypeId("ns3::LinkCheckComponent")
                             .SetParent<NetworkControllerComponent>()

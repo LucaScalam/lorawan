@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -38,7 +39,7 @@ NS_OBJECT_ENSURE_REGISTERED(SimpleGatewayLoraPhy);
  ***********************************************************************/
 
 TypeId
-SimpleGatewayLoraPhy::GetTypeId()
+SimpleGatewayLoraPhy::GetTypeId(void)
 {
     static TypeId tid = TypeId("ns3::SimpleGatewayLoraPhy")
                             .SetParent<GatewayLoraPhy>()

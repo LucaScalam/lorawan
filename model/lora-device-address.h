@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -53,7 +54,7 @@ class NwkID
      *
      * \return The Network Id.
      */
-    uint8_t Get() const;
+    uint8_t Get(void) const;
 
   private:
     uint8_t m_nwkId; //!< 8-bit integer representation of the network id
@@ -84,7 +85,7 @@ class NwkAddr
      *
      * \return The Network Address.
      */
-    uint32_t Get() const;
+    uint32_t Get(void) const;
 
   private:
     uint32_t m_nwkAddr; //!< 8-bit integer representation of the network id
@@ -138,7 +139,7 @@ class LoraDeviceAddress
      *
      * Note that nwkId is 7 bits long, and this function expects the 7 least
      * significant bits to contain the nwkId. Similarly for the nwkAddr, the 25
-     * least significant bits of the uint32 are those that are expected to
+     * least signficant bits of the uint32 are those that are expected to
      * contain the nwkAddr.
      */
     void Set(uint8_t nwkId, uint32_t nwkAddr);
@@ -146,7 +147,7 @@ class LoraDeviceAddress
     /**
      * Get the address in 32-bit integer form.
      */
-    uint32_t Get() const;
+    uint32_t Get(void) const;
 
     /**
      * Get the NwkID of this device.
@@ -156,7 +157,7 @@ class LoraDeviceAddress
      *
      * \return An 8-bit representation of the Network Id of this Device Address.
      */
-    uint8_t GetNwkID();
+    uint8_t GetNwkID(void);
 
     /**
      * Set the NwkID of this device.
@@ -176,7 +177,7 @@ class LoraDeviceAddress
      *
      * \return A 32-bit representation of the Network Address of this Device Address.
      */
-    uint32_t GetNwkAddr();
+    uint32_t GetNwkAddr(void);
 
     /**
      * Set the NwkAddr of this device.
@@ -193,7 +194,7 @@ class LoraDeviceAddress
      *
      * \return The string containing the network address.
      */
-    std::string Print() const;
+    std::string Print(void) const;
 
     bool operator==(const LoraDeviceAddress& other) const;
     bool operator!=(const LoraDeviceAddress& other) const;
@@ -204,8 +205,8 @@ class LoraDeviceAddress
     /**
      * Convert this instance of LoraDeviceAddress to an Address
      */
-    Address ConvertTo() const;
-    static uint8_t GetType();
+    Address ConvertTo(void) const;
+    static uint8_t GetType(void);
     NwkID m_nwkId;     //!< The network Id of this address
     NwkAddr m_nwkAddr; //!< The network address of this address
 };

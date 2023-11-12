@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2018 University of Padova
  *
@@ -46,10 +47,10 @@ namespace lorawan
 class NetworkStatus : public Object
 {
   public:
-    static TypeId GetTypeId();
+    static TypeId GetTypeId(void);
 
     NetworkStatus();
-    ~NetworkStatus() override;
+    virtual ~NetworkStatus();
 
     /**
      * Add a device to the ones that are tracked by this NetworkStatus object.
@@ -113,7 +114,7 @@ class NetworkStatus : public Object
     /**
      * Return the number of end devices currently managed by the server.
      */
-    int CountEndDevices();
+    int CountEndDevices(void);
 
   public:
     std::map<LoraDeviceAddress, Ptr<EndDeviceStatus>> m_endDeviceStatuses;

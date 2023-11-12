@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -45,10 +46,10 @@ class LoraPhy;
 class LorawanMac : public Object
 {
   public:
-    static TypeId GetTypeId();
+    static TypeId GetTypeId(void);
 
     LorawanMac();
-    ~LorawanMac() override;
+    virtual ~LorawanMac();
 
     typedef std::array<std::array<uint8_t, 6>, 8> ReplyDataRateMatrix;
 
@@ -64,7 +65,7 @@ class LorawanMac : public Object
      *
      * \return The PHY layer that this MAC is connected to.
      */
-    Ptr<LoraPhy> GetPhy();
+    Ptr<LoraPhy> GetPhy(void);
 
     /**
      * Send a packet.
@@ -107,14 +108,14 @@ class LorawanMac : public Object
      *
      * \return The NetDevice this MAC layer will refer to.
      */
-    Ptr<NetDevice> GetDevice();
+    Ptr<NetDevice> GetDevice(void);
 
     /**
      * Get the logical lora channel helper associated with this MAC.
      *
      * \return The instance of LogicalLoraChannelHelper that this MAC is using.
      */
-    LogicalLoraChannelHelper GetLogicalLoraChannelHelper();
+    LogicalLoraChannelHelper GetLogicalLoraChannelHelper(void);
 
     /**
      * Set the LogicalLoraChannelHelper this MAC instance will use.
@@ -210,7 +211,7 @@ class LorawanMac : public Object
      *
      * \return The number of preamble symbols to use (typically 8).
      */
-    int GetNPreambleSymbols() const;
+    int GetNPreambleSymbols(void);
 
   protected:
     /**

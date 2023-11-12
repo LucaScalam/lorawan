@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -34,7 +35,7 @@ NS_LOG_COMPONENT_DEFINE("LoraNetDevice");
 NS_OBJECT_ENSURE_REGISTERED(LoraNetDevice);
 
 TypeId
-LoraNetDevice::GetTypeId()
+LoraNetDevice::GetTypeId(void)
 {
     static TypeId tid =
         TypeId("ns3::LoraNetDevice")
@@ -60,10 +61,10 @@ LoraNetDevice::GetTypeId()
 }
 
 LoraNetDevice::LoraNetDevice()
-    : m_node(nullptr),
-      m_phy(nullptr),
-      m_mac(nullptr),
-      m_configComplete(false)
+    : m_node(0),
+      m_phy(0),
+      m_mac(0),
+      m_configComplete(0)
 {
     NS_LOG_FUNCTION_NOARGS();
 }
@@ -80,7 +81,7 @@ LoraNetDevice::SetMac(Ptr<LorawanMac> mac)
 }
 
 Ptr<LorawanMac>
-LoraNetDevice::GetMac() const
+LoraNetDevice::GetMac(void) const
 {
     return m_mac;
 }
@@ -92,13 +93,13 @@ LoraNetDevice::SetPhy(Ptr<LoraPhy> phy)
 }
 
 Ptr<LoraPhy>
-LoraNetDevice::GetPhy() const
+LoraNetDevice::GetPhy(void) const
 {
     return m_phy;
 }
 
 void
-LoraNetDevice::CompleteConfig()
+LoraNetDevice::CompleteConfig(void)
 {
     NS_LOG_FUNCTION_NOARGS();
 
@@ -137,14 +138,14 @@ LoraNetDevice::Receive(Ptr<Packet> packet)
  ******************************************/
 
 Ptr<Channel>
-LoraNetDevice::GetChannel() const
+LoraNetDevice::GetChannel(void) const
 {
     NS_LOG_FUNCTION(this);
     return m_phy->GetChannel();
 }
 
 Ptr<LoraChannel>
-LoraNetDevice::DoGetChannel() const
+LoraNetDevice::DoGetChannel(void) const
 {
     NS_LOG_FUNCTION(this);
     return m_phy->GetChannel();
@@ -157,7 +158,7 @@ LoraNetDevice::SetIfIndex(const uint32_t index)
 }
 
 uint32_t
-LoraNetDevice::GetIfIndex() const
+LoraNetDevice::GetIfIndex(void) const
 {
     NS_LOG_FUNCTION(this);
 
@@ -171,7 +172,7 @@ LoraNetDevice::SetAddress(Address address)
 }
 
 Address
-LoraNetDevice::GetAddress() const
+LoraNetDevice::GetAddress(void) const
 {
     NS_LOG_FUNCTION(this);
 
@@ -187,7 +188,7 @@ LoraNetDevice::SetMtu(const uint16_t mtu)
 }
 
 uint16_t
-LoraNetDevice::GetMtu() const
+LoraNetDevice::GetMtu(void) const
 {
     NS_LOG_FUNCTION(this);
 
@@ -195,7 +196,7 @@ LoraNetDevice::GetMtu() const
 }
 
 bool
-LoraNetDevice::IsLinkUp() const
+LoraNetDevice::IsLinkUp(void) const
 {
     NS_LOG_FUNCTION(this);
 
@@ -209,7 +210,7 @@ LoraNetDevice::AddLinkChangeCallback(Callback<void> callback)
 }
 
 bool
-LoraNetDevice::IsBroadcast() const
+LoraNetDevice::IsBroadcast(void) const
 {
     NS_LOG_FUNCTION(this);
 
@@ -217,7 +218,7 @@ LoraNetDevice::IsBroadcast() const
 }
 
 Address
-LoraNetDevice::GetBroadcast() const
+LoraNetDevice::GetBroadcast(void) const
 {
     NS_LOG_FUNCTION(this);
 
@@ -225,7 +226,7 @@ LoraNetDevice::GetBroadcast() const
 }
 
 bool
-LoraNetDevice::IsMulticast() const
+LoraNetDevice::IsMulticast(void) const
 {
     NS_LOG_FUNCTION(this);
 
@@ -249,7 +250,7 @@ LoraNetDevice::GetMulticast(Ipv6Address addr) const
 }
 
 bool
-LoraNetDevice::IsBridge() const
+LoraNetDevice::IsBridge(void) const
 {
     NS_LOG_FUNCTION(this);
 
@@ -257,7 +258,7 @@ LoraNetDevice::IsBridge() const
 }
 
 bool
-LoraNetDevice::IsPointToPoint() const
+LoraNetDevice::IsPointToPoint(void) const
 {
     NS_LOG_FUNCTION(this);
 
@@ -289,7 +290,7 @@ LoraNetDevice::SendFrom(Ptr<Packet> packet,
 }
 
 Ptr<Node>
-LoraNetDevice::GetNode() const
+LoraNetDevice::GetNode(void) const
 {
     NS_LOG_FUNCTION(this);
 
@@ -306,7 +307,7 @@ LoraNetDevice::SetNode(Ptr<Node> node)
 }
 
 bool
-LoraNetDevice::NeedsArp() const
+LoraNetDevice::NeedsArp(void) const
 {
     NS_LOG_FUNCTION(this);
 
@@ -327,7 +328,7 @@ LoraNetDevice::SetPromiscReceiveCallback(PromiscReceiveCallback cb)
 }
 
 bool
-LoraNetDevice::SupportsSendFrom() const
+LoraNetDevice::SupportsSendFrom(void) const
 {
     NS_LOG_FUNCTION_NOARGS();
 

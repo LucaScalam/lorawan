@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -50,7 +51,7 @@ LoraHelper::Install(const LoraPhyHelper& phyHelper,
     NetDeviceContainer devices;
 
     // Go over the various nodes in which to install the NetDevice
-    for (auto i = c.Begin(); i != c.End(); ++i)
+    for (NodeContainer::Iterator i = c.Begin(); i != c.End(); ++i)
     {
         Ptr<Node> node = *i;
 
@@ -151,7 +152,7 @@ LoraHelper::EnablePacketTracking()
 }
 
 LoraPacketTracker&
-LoraHelper::GetPacketTracker()
+LoraHelper::GetPacketTracker(void)
 {
     NS_LOG_FUNCTION(this);
 
@@ -161,7 +162,7 @@ LoraHelper::GetPacketTracker()
 void
 LoraHelper::EnableSimulationTimePrinting(Time interval)
 {
-    m_oldtime = std::time(nullptr);
+    m_oldtime = std::time(0);
     Simulator::Schedule(Seconds(0), &LoraHelper::DoPrintSimulationTime, this, interval);
 }
 
@@ -204,7 +205,7 @@ LoraHelper::DoPrintDeviceStatus(NodeContainer endDevices,
     }
 
     Time currentTime = Simulator::Now();
-    for (auto j = endDevices.Begin(); j != endDevices.End(); ++j)
+    for (NodeContainer::Iterator j = endDevices.Begin(); j != endDevices.End(); ++j)
     {
         Ptr<Node> object = *j;
         Ptr<MobilityModel> position = object->GetObject<MobilityModel>();
@@ -329,9 +330,9 @@ LoraHelper::DoPrintSimulationTime(Time interval)
 {
     // NS_LOG_INFO ("Time: " << Simulator::Now().GetHours());
     std::cout << "Simulated time: " << Simulator::Now().GetHours() << " hours" << std::endl;
-    std::cout << "Real time from last call: " << std::time(nullptr) - m_oldtime << " seconds"
+    std::cout << "Real time from last call: " << std::time(0) - m_oldtime << " seconds"
               << std::endl;
-    m_oldtime = std::time(nullptr);
+    m_oldtime = std::time(0);
     Simulator::Schedule(interval, &LoraHelper::DoPrintSimulationTime, this, interval);
 }
 

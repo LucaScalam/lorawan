@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -34,11 +35,11 @@ namespace lorawan
 class GatewayStatus : public Object
 {
   public:
-    static TypeId GetTypeId();
+    static TypeId GetTypeId(void);
 
     GatewayStatus();
     GatewayStatus(Address address, Ptr<NetDevice> netDevice, Ptr<GatewayLorawanMac> gwMac);
-    ~GatewayStatus() override;
+    virtual ~GatewayStatus();
 
     /**
      * Get this gateway's P2P link address.
@@ -63,7 +64,7 @@ class GatewayStatus : public Object
     /**
      * Get a pointer to this gateway's MAC instance.
      */
-    Ptr<GatewayLorawanMac> GetGatewayMac();
+    Ptr<GatewayLorawanMac> GetGatewayMac(void);
 
     /**
      * Set a pointer to this gateway's MAC instance.
@@ -81,7 +82,7 @@ class GatewayStatus : public Object
     bool IsAvailableForTransmission(double frequency);
 
     void SetNextTransmissionTime(Time nextTransmissionTime);
-    // Time GetNextTransmissionTime ();
+    // Time GetNextTransmissionTime (void);
 
   private:
     Address m_address; //!< The Address of the P2PNetDevice of this gateway

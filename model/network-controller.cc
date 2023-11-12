@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -29,10 +30,9 @@ NS_LOG_COMPONENT_DEFINE("NetworkController");
 NS_OBJECT_ENSURE_REGISTERED(NetworkController);
 
 TypeId
-NetworkController::GetTypeId()
+NetworkController::GetTypeId(void)
 {
     static TypeId tid = TypeId("ns3::NetworkController")
-                            .SetParent<Object>()
                             .AddConstructor<NetworkController>()
                             .SetGroupName("lorawan");
     return tid;

@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2018 University of Padova
  *
@@ -33,7 +34,7 @@ NS_LOG_COMPONENT_DEFINE("AdrComponent");
 NS_OBJECT_ENSURE_REGISTERED(AdrComponent);
 
 TypeId
-AdrComponent::GetTypeId()
+AdrComponent::GetTypeId(void)
 {
     static TypeId tid =
         TypeId("ns3::AdrComponent")
@@ -104,7 +105,7 @@ AdrComponent::BeforeSendingReply(Ptr<EndDeviceStatus> status, Ptr<NetworkStatus>
     myPacket->RemoveHeader(mHdr);
     myPacket->RemoveHeader(fHdr);
 
-    // Execute the ADR algorithm only if the request bit is set
+    // Execute the ADR algotithm only if the request bit is set
     if (fHdr.GetAdr())
     {
         if (int(status->GetReceivedPacketList().size()) < historyRange)
@@ -202,8 +203,8 @@ AdrComponent::AdrImplementation(uint8_t* newDataRate,
 
     NS_LOG_DEBUG("SF = " << (unsigned)spreadingFactor);
 
-    // Get the device data rate and use it to get the SNR demodulation threshold
-    double req_SNR = threshold[SfToDr(spreadingFactor)];
+    // Get the device data rate and use it to get the SNR demodulation treshold
+    double req_SNR = treshold[SfToDr(spreadingFactor)];
 
     NS_LOG_DEBUG("Required SNR = " << req_SNR);
 
@@ -283,7 +284,7 @@ AdrComponent::SfToDr(uint8_t sf)
 }
 
 double
-AdrComponent::RxPowerToSNR(double transmissionPower) const
+AdrComponent::RxPowerToSNR(double transmissionPower)
 {
     // The following conversion ignores interfering packets
     return transmissionPower + 174 - 10 * log10(B) - NF;
@@ -293,7 +294,7 @@ AdrComponent::RxPowerToSNR(double transmissionPower) const
 double
 AdrComponent::GetMinTxFromGateways(EndDeviceStatus::GatewayList gwList)
 {
-    auto it = gwList.begin();
+    EndDeviceStatus::GatewayList::iterator it = gwList.begin();
     double min = it->second.rxPower;
 
     for (; it != gwList.end(); it++)
@@ -311,7 +312,7 @@ AdrComponent::GetMinTxFromGateways(EndDeviceStatus::GatewayList gwList)
 double
 AdrComponent::GetMaxTxFromGateways(EndDeviceStatus::GatewayList gwList)
 {
-    auto it = gwList.begin();
+    EndDeviceStatus::GatewayList::iterator it = gwList.begin();
     double max = it->second.rxPower;
 
     for (; it != gwList.end(); it++)
@@ -331,7 +332,7 @@ AdrComponent::GetAverageTxFromGateways(EndDeviceStatus::GatewayList gwList)
 {
     double sum = 0;
 
-    for (auto it = gwList.begin(); it != gwList.end(); it++)
+    for (EndDeviceStatus::GatewayList::iterator it = gwList.begin(); it != gwList.end(); it++)
     {
         NS_LOG_DEBUG("Gateway at " << it->first << " has TP " << it->second.rxPower);
         sum += it->second.rxPower;

@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -33,7 +34,7 @@ NS_LOG_COMPONENT_DEFINE("BuildingPenetrationLoss");
 NS_OBJECT_ENSURE_REGISTERED(BuildingPenetrationLoss);
 
 TypeId
-BuildingPenetrationLoss::GetTypeId()
+BuildingPenetrationLoss::GetTypeId(void)
 {
     static TypeId tid = TypeId("ns3::BuildingPenetrationLoss")
                             .SetParent<PropagationLossModel>()
@@ -136,7 +137,7 @@ BuildingPenetrationLoss::DoAssignStreams(int64_t stream)
 }
 
 int
-BuildingPenetrationLoss::GetPValue() const
+BuildingPenetrationLoss::GetPValue(void) const
 {
     NS_LOG_FUNCTION_NOARGS();
 
@@ -163,7 +164,7 @@ BuildingPenetrationLoss::GetPValue() const
 }
 
 int
-BuildingPenetrationLoss::GetWallLossValue() const
+BuildingPenetrationLoss::GetWallLossValue(void) const
 {
     NS_LOG_FUNCTION_NOARGS();
 

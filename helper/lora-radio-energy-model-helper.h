@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  *
  * This program is free software; you can redistribute it and/or modify
@@ -45,7 +46,7 @@ class LoraRadioEnergyModelHelper : public DeviceEnergyModelHelper
     /**
      * Destroy a RadioEnergy Helper
      */
-    ~LoraRadioEnergyModelHelper() override;
+    ~LoraRadioEnergyModelHelper();
 
     /**
      * \param name the name of the attribute to set
@@ -53,7 +54,7 @@ class LoraRadioEnergyModelHelper : public DeviceEnergyModelHelper
      *
      * Sets an attribute of the underlying PHY object.
      */
-    void Set(std::string name, const AttributeValue& v) override;
+    void Set(std::string name, const AttributeValue& v);
 
     /**
      * \param name the name of the model to set
@@ -102,8 +103,7 @@ class LoraRadioEnergyModelHelper : public DeviceEnergyModelHelper
      *
      * Implements DeviceEnergyModel::Install.
      */
-    Ptr<DeviceEnergyModel> DoInstall(Ptr<NetDevice> device,
-                                     Ptr<EnergySource> source) const override;
+    virtual Ptr<DeviceEnergyModel> DoInstall(Ptr<NetDevice> device, Ptr<EnergySource> source) const;
 
   private:
     ObjectFactory m_radioEnergy;    ///< radio energy

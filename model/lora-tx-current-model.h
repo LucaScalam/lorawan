@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  *
  * This program is free software; you can redistribute it and/or modify
@@ -32,10 +33,10 @@ namespace lorawan
 class LoraTxCurrentModel : public Object
 {
   public:
-    static TypeId GetTypeId();
+    static TypeId GetTypeId(void);
 
     LoraTxCurrentModel();
-    ~LoraTxCurrentModel() override;
+    virtual ~LoraTxCurrentModel();
 
     /**
      * Get the current for transmission at this power.
@@ -53,10 +54,10 @@ class LoraTxCurrentModel : public Object
 class LinearLoraTxCurrentModel : public LoraTxCurrentModel
 {
   public:
-    static TypeId GetTypeId();
+    static TypeId GetTypeId(void);
 
     LinearLoraTxCurrentModel();
-    ~LinearLoraTxCurrentModel() override;
+    virtual ~LinearLoraTxCurrentModel();
 
     /**
      * \param eta (dimension-less)
@@ -82,19 +83,19 @@ class LinearLoraTxCurrentModel : public LoraTxCurrentModel
     /**
      * \return the power amplifier efficiency.
      */
-    double GetEta() const;
+    double GetEta(void) const;
 
     /**
      * \return the supply voltage.
      */
-    double GetVoltage() const;
+    double GetVoltage(void) const;
 
     /**
      * \return the current in the STANDBY state.
      */
-    double GetStandbyCurrent() const;
+    double GetStandbyCurrent(void) const;
 
-    double CalcTxCurrent(double txPowerDbm) const override;
+    double CalcTxCurrent(double txPowerDbm) const;
 
   private:
     double m_eta;         //!< ETA
@@ -109,10 +110,10 @@ class ConstantLoraTxCurrentModel : public LoraTxCurrentModel
      * \brief Get the type ID.
      * \return the object TypeId
      */
-    static TypeId GetTypeId();
+    static TypeId GetTypeId(void);
 
     ConstantLoraTxCurrentModel();
-    ~ConstantLoraTxCurrentModel() override;
+    virtual ~ConstantLoraTxCurrentModel();
 
     /**
      * \param txCurrent (Ampere)
@@ -124,9 +125,9 @@ class ConstantLoraTxCurrentModel : public LoraTxCurrentModel
     /**
      * \return the current in the TX state.
      */
-    double GetTxCurrent() const;
+    double GetTxCurrent(void) const;
 
-    double CalcTxCurrent(double txPowerDbm) const override;
+    double CalcTxCurrent(double txPowerDbm) const;
 
   private:
     double m_txCurrent;

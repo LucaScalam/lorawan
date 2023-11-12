@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -31,15 +32,15 @@ class HexGridPositionAllocator : public PositionAllocator
     HexGridPositionAllocator();
     HexGridPositionAllocator(double radius);
 
-    ~HexGridPositionAllocator() override;
+    ~HexGridPositionAllocator();
 
-    Vector GetNext() const override;
+    virtual Vector GetNext(void) const;
 
-    int64_t AssignStreams(int64_t stream) override;
+    virtual int64_t AssignStreams(int64_t stream);
 
-    static TypeId GetTypeId();
+    static TypeId GetTypeId(void);
 
-    double GetRadius() const;
+    double GetRadius(void);
 
     void SetRadius(double radius);
 

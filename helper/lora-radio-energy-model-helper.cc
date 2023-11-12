@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  *
  * This program is free software; you can redistribute it and/or modify
@@ -81,17 +82,17 @@ LoraRadioEnergyModelHelper::SetTxCurrentModel(std::string name,
 Ptr<DeviceEnergyModel>
 LoraRadioEnergyModelHelper::DoInstall(Ptr<NetDevice> device, Ptr<EnergySource> source) const
 {
-    NS_ASSERT(device);
-    NS_ASSERT(source);
+    NS_ASSERT(device != NULL);
+    NS_ASSERT(source != NULL);
     // check if device is LoraNetDevice
     std::string deviceName = device->GetInstanceTypeId().GetName();
-    if (deviceName != "ns3::LoraNetDevice")
+    if (deviceName.compare("ns3::LoraNetDevice") != 0)
     {
         NS_FATAL_ERROR("NetDevice type is not LoraNetDevice!");
     }
     Ptr<Node> node = device->GetNode();
     Ptr<LoraRadioEnergyModel> model = m_radioEnergy.Create()->GetObject<LoraRadioEnergyModel>();
-    NS_ASSERT(model);
+    NS_ASSERT(model != NULL);
     // set energy source pointer
     model->SetEnergySource(source);
 

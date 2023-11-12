@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -65,37 +66,37 @@ class LoraInterferenceHelper
         /**
          * Get the duration of the event.
          */
-        Time GetDuration() const;
+        Time GetDuration(void) const;
 
         /**
          * Get the starting time of the event.
          */
-        Time GetStartTime() const;
+        Time GetStartTime(void) const;
 
         /**
          * Get the ending time of the event.
          */
-        Time GetEndTime() const;
+        Time GetEndTime(void) const;
 
         /**
          * Get the power of the event.
          */
-        double GetRxPowerdBm() const;
+        double GetRxPowerdBm(void) const;
 
         /**
          * Get the spreading factor used by this signal.
          */
-        uint8_t GetSpreadingFactor() const;
+        uint8_t GetSpreadingFactor(void) const;
 
         /**
          * Get the packet this event was generated for.
          */
-        Ptr<Packet> GetPacket() const;
+        Ptr<Packet> GetPacket(void) const;
 
         /**
          * Get the frequency this event was on.
          */
-        double GetFrequency() const;
+        double GetFrequency(void) const;
 
         /**
          * Print the current event in a human readable form.
@@ -140,7 +141,7 @@ class LoraInterferenceHelper
         ALOHA,
     };
 
-    static TypeId GetTypeId();
+    static TypeId GetTypeId(void);
 
     LoraInterferenceHelper();
     virtual ~LoraInterferenceHelper();
@@ -198,12 +199,12 @@ class LoraInterferenceHelper
     /**
      * Delete all events in the LoraInterferenceHelper.
      */
-    void ClearAllEvents();
+    void ClearAllEvents(void);
 
     /**
      * Delete old events in this LoraInterferenceHelper.
      */
-    void CleanOldEvents();
+    void CleanOldEvents(void);
 
     static CollisionMatrix collisionMatrix;
 

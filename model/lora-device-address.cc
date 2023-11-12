@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -51,7 +52,7 @@ NwkID::Set(uint8_t nwkId)
 }
 
 uint8_t
-NwkID::Get() const
+NwkID::Get(void) const
 {
     return m_nwkId;
 }
@@ -77,7 +78,7 @@ NwkAddr::Set(uint32_t nwkAddr)
 }
 
 uint32_t
-NwkAddr::Get() const
+NwkAddr::Get(void) const
 {
     return m_nwkAddr;
 }
@@ -145,7 +146,7 @@ LoraDeviceAddress::Deserialize(const uint8_t buf[4])
 }
 
 Address
-LoraDeviceAddress::ConvertTo() const
+LoraDeviceAddress::ConvertTo(void) const
 {
     NS_LOG_FUNCTION(this);
 
@@ -170,7 +171,7 @@ LoraDeviceAddress::ConvertFrom(const Address& address)
 }
 
 uint8_t
-LoraDeviceAddress::GetType()
+LoraDeviceAddress::GetType(void)
 {
     NS_LOG_FUNCTION_NOARGS();
 
@@ -179,12 +180,12 @@ LoraDeviceAddress::GetType()
 }
 
 uint32_t
-LoraDeviceAddress::Get() const
+LoraDeviceAddress::Get(void) const
 {
     NS_LOG_FUNCTION_NOARGS();
 
     uint32_t address = 0;
-    uint32_t nwkId = m_nwkId.Get() << 25;
+    uint32_t nwkId = uint32_t(m_nwkId.Get() << 25);
     address |= (m_nwkAddr.Get() | nwkId);
     NS_LOG_DEBUG("m_nwkId + m_nwkAddr = " << std::bitset<32>(address));
 
@@ -201,7 +202,7 @@ LoraDeviceAddress::Set(uint32_t address)
 }
 
 uint8_t
-LoraDeviceAddress::GetNwkID()
+LoraDeviceAddress::GetNwkID(void)
 {
     NS_LOG_FUNCTION_NOARGS();
 
@@ -209,7 +210,7 @@ LoraDeviceAddress::GetNwkID()
 }
 
 uint32_t
-LoraDeviceAddress::GetNwkAddr()
+LoraDeviceAddress::GetNwkAddr(void)
 {
     NS_LOG_FUNCTION_NOARGS();
 
@@ -233,7 +234,7 @@ LoraDeviceAddress::SetNwkAddr(uint32_t nwkAddr)
 }
 
 std::string
-LoraDeviceAddress::Print() const
+LoraDeviceAddress::Print(void) const
 {
     NS_LOG_FUNCTION_NOARGS();
 

@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -31,7 +32,7 @@ NS_LOG_COMPONENT_DEFINE("Forwarder");
 NS_OBJECT_ENSURE_REGISTERED(Forwarder);
 
 TypeId
-Forwarder::GetTypeId()
+Forwarder::GetTypeId(void)
 {
     static TypeId tid = TypeId("ns3::Forwarder")
                             .SetParent<Application>()
@@ -97,7 +98,7 @@ Forwarder::ReceiveFromPointToPoint(Ptr<NetDevice> pointToPointNetDevice,
 }
 
 void
-Forwarder::StartApplication()
+Forwarder::StartApplication(void)
 {
     NS_LOG_FUNCTION(this);
 
@@ -105,7 +106,7 @@ Forwarder::StartApplication()
 }
 
 void
-Forwarder::StopApplication()
+Forwarder::StopApplication(void)
 {
     NS_LOG_FUNCTION_NOARGS();
 

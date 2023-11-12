@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -46,27 +47,27 @@ class AdrComponent : public NetworkControllerComponent
     };
 
   public:
-    static TypeId GetTypeId();
+    static TypeId GetTypeId(void);
 
     // Constructor
     AdrComponent();
     // Destructor
-    ~AdrComponent() override;
+    virtual ~AdrComponent();
 
     void OnReceivedPacket(Ptr<const Packet> packet,
                           Ptr<EndDeviceStatus> status,
-                          Ptr<NetworkStatus> networkStatus) override;
+                          Ptr<NetworkStatus> networkStatus);
 
-    void BeforeSendingReply(Ptr<EndDeviceStatus> status, Ptr<NetworkStatus> networkStatus) override;
+    void BeforeSendingReply(Ptr<EndDeviceStatus> status, Ptr<NetworkStatus> networkStatus);
 
-    void OnFailedReply(Ptr<EndDeviceStatus> status, Ptr<NetworkStatus> networkStatus) override;
+    void OnFailedReply(Ptr<EndDeviceStatus> status, Ptr<NetworkStatus> networkStatus);
 
   private:
     void AdrImplementation(uint8_t* newDataRate, uint8_t* newTxPower, Ptr<EndDeviceStatus> status);
 
     uint8_t SfToDr(uint8_t sf);
 
-    double RxPowerToSNR(double transmissionPower) const;
+    double RxPowerToSNR(double transmissionPower);
 
     double GetMinTxFromGateways(EndDeviceStatus::GatewayList gwList);
 
@@ -113,7 +114,7 @@ class AdrComponent : public NetworkControllerComponent
 
     // Vector containing the required SNR for the 6 allowed SF levels
     // ranging from 7 to 12 (the SNR values are in dB).
-    double threshold[6] = {-20.0, -17.5, -15.0, -12.5, -10.0, -7.5};
+    double treshold[6] = {-20.0, -17.5, -15.0, -12.5, -10.0, -7.5};
 
     bool m_toggleTxPower;
 };

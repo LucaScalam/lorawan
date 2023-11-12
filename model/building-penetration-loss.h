@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -36,36 +37,36 @@ namespace lorawan
 class BuildingPenetrationLoss : public PropagationLossModel
 {
   public:
-    static TypeId GetTypeId();
+    static TypeId GetTypeId(void);
 
     BuildingPenetrationLoss();
 
-    ~BuildingPenetrationLoss() override;
+    ~BuildingPenetrationLoss();
 
   private:
     /**
      * Perform the computation of the received power according to the current
      * model.
      */
-    double DoCalcRxPower(double txPowerDbm,
-                         Ptr<MobilityModel> a,
-                         Ptr<MobilityModel> b) const override;
+    virtual double DoCalcRxPower(double txPowerDbm,
+                                 Ptr<MobilityModel> a,
+                                 Ptr<MobilityModel> b) const;
 
-    int64_t DoAssignStreams(int64_t stream) override;
+    virtual int64_t DoAssignStreams(int64_t stream);
 
     /**
      * Generate a random p value.
      * The distribution of the returned value is as specified in TR 45.820.
      * \returns A value in the 0-3 range.
      */
-    int GetPValue() const;
+    int GetPValue(void) const;
 
     /**
      * Get a value to compute the wall loss.
      * The distribution of the returned value is as specified in TR 45.820.
      * \returns A value in the 0-2 range.
      */
-    int GetWallLossValue() const;
+    int GetWallLossValue(void) const;
 
     /**
      * Compute the wall loss associated to this mobility model

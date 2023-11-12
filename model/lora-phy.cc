@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -34,7 +35,7 @@ NS_LOG_COMPONENT_DEFINE("LoraPhy");
 NS_OBJECT_ENSURE_REGISTERED(LoraPhy);
 
 TypeId
-LoraPhy::GetTypeId()
+LoraPhy::GetTypeId(void)
 {
     static TypeId tid =
         TypeId("ns3::LoraPhy")
@@ -85,7 +86,7 @@ LoraPhy::~LoraPhy()
 }
 
 Ptr<NetDevice>
-LoraPhy::GetDevice() const
+LoraPhy::GetDevice(void) const
 {
     return m_device;
 }
@@ -99,7 +100,7 @@ LoraPhy::SetDevice(Ptr<NetDevice> device)
 }
 
 Ptr<LoraChannel>
-LoraPhy::GetChannel() const
+LoraPhy::GetChannel(void) const
 {
     NS_LOG_FUNCTION_NOARGS();
 
@@ -107,7 +108,7 @@ LoraPhy::GetChannel() const
 }
 
 Ptr<MobilityModel>
-LoraPhy::GetMobility()
+LoraPhy::GetMobility(void)
 {
     NS_LOG_FUNCTION_NOARGS();
 
