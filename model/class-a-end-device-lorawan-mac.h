@@ -39,6 +39,7 @@ namespace ns3
 namespace lorawan
 {
 
+
 /**
  * Class representing the MAC layer of a Class A LoRaWAN device.
  */
