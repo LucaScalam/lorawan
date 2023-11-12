@@ -327,6 +327,7 @@ class ClassAEndDeviceLorawanMac : public EndDeviceLorawanMac
 
     Ptr<StructTest> m_offsetData;
 
+
 }; /* ClassAEndDeviceLorawanMac */
 } /* namespace lorawan */
 } /* namespace ns3 */
