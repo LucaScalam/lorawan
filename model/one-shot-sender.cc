@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -37,7 +38,7 @@ NS_LOG_COMPONENT_DEFINE("OneShotSender");
 NS_OBJECT_ENSURE_REGISTERED(OneShotSender);
 
 TypeId
-OneShotSender::GetTypeId()
+OneShotSender::GetTypeId(void)
 {
     static TypeId tid = TypeId("ns3::OneShotSender")
                             .SetParent<Application>()
@@ -71,7 +72,7 @@ OneShotSender::SetSendTime(Time sendTime)
 }
 
 void
-OneShotSender::SendPacket()
+OneShotSender::SendPacket(void)
 {
     NS_LOG_FUNCTION(this);
 
@@ -81,8 +82,9 @@ OneShotSender::SendPacket()
 }
 
 void
-OneShotSender::StartApplication()
+OneShotSender::StartApplication(void)
 {
+    NS_LOG_DEBUG("------------- StartApplication ");
     NS_LOG_FUNCTION(this);
 
     // Make sure we have a MAC layer
@@ -101,7 +103,7 @@ OneShotSender::StartApplication()
 }
 
 void
-OneShotSender::StopApplication()
+OneShotSender::StopApplication(void)
 {
     NS_LOG_FUNCTION_NOARGS();
     Simulator::Cancel(m_sendEvent);

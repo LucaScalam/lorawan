@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -36,7 +37,7 @@ NS_LOG_COMPONENT_DEFINE("PeriodicSender");
 NS_OBJECT_ENSURE_REGISTERED(PeriodicSender);
 
 TypeId
-PeriodicSender::GetTypeId()
+PeriodicSender::GetTypeId(void)
 {
     static TypeId tid = TypeId("ns3::PeriodicSender")
                             .SetParent<Application>()
@@ -60,7 +61,7 @@ PeriodicSender::PeriodicSender()
     : m_interval(Seconds(10)),
       m_initialDelay(Seconds(1)),
       m_basePktSize(10),
-      m_pktSizeRV(nullptr)
+      m_pktSizeRV(0)
 
 {
     NS_LOG_FUNCTION_NOARGS();
@@ -79,7 +80,7 @@ PeriodicSender::SetInterval(Time interval)
 }
 
 Time
-PeriodicSender::GetInterval() const
+PeriodicSender::GetInterval(void) const
 {
     NS_LOG_FUNCTION(this);
     return m_interval;
@@ -105,7 +106,7 @@ PeriodicSender::SetPacketSize(uint8_t size)
 }
 
 void
-PeriodicSender::SendPacket()
+PeriodicSender::SendPacket(void)
 {
     NS_LOG_FUNCTION(this);
 
@@ -120,17 +121,24 @@ PeriodicSender::SendPacket()
     {
         packet = Create<Packet>(m_basePktSize);
     }
-    m_mac->Send(packet);
+    // m_mac->Send(packet);
+    Ptr<LoraNetDevice> loraNetDevice = m_node->GetDevice(0)->GetObject<LoraNetDevice>();
+    Ptr<ClassAEndDeviceLorawanMac> edLorawanMac =
+        loraNetDevice->GetMac()->GetObject<ClassAEndDeviceLorawanMac>();
+    edLorawanMac->OpenBeaconWindow();
+
+    // we don't to send periodically packets
 
     // Schedule the next SendPacket event
-    m_sendEvent = Simulator::Schedule(m_interval, &PeriodicSender::SendPacket, this);
+    // m_sendEvent = Simulator::Schedule(m_interval, &PeriodicSender::SendPacket, this);
 
     NS_LOG_DEBUG("Sent a packet of size " << packet->GetSize());
 }
 
 void
-PeriodicSender::StartApplication()
+PeriodicSender::StartApplication(void)
 {
+    NS_LOG_DEBUG("------------- StartApplication ");
     NS_LOG_FUNCTION(this);
 
     // Make sure we have a MAC layer
@@ -148,11 +156,12 @@ PeriodicSender::StartApplication()
     NS_LOG_DEBUG("Starting up application with a first event with a " << m_initialDelay.GetSeconds()
                                                                       << " seconds delay");
     m_sendEvent = Simulator::Schedule(m_initialDelay, &PeriodicSender::SendPacket, this);
+    // Simulator::Schedule(Simulator::Now(), &ClassAEndDeviceLorawanMac::OpenBeaconWindow(), this);     
     NS_LOG_DEBUG("Event Id: " << m_sendEvent.GetUid());
 }
 
 void
-PeriodicSender::StopApplication()
+PeriodicSender::StopApplication(void)
 {
     NS_LOG_FUNCTION_NOARGS();
     Simulator::Cancel(m_sendEvent);

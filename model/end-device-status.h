@@ -115,35 +115,35 @@ class EndDeviceStatus : public Object
      *
      * \return A boolean value signaling if the end device needs a reply.
      */
-    bool NeedsReply() const;
+    bool NeedsReply(void);
 
     /**
      * Get the reply packet.
      *
      * \return A pointer to the packet reply (data + headers).
      */
-    Ptr<Packet> GetCompleteReplyPacket();
+    Ptr<Packet> GetCompleteReplyPacket(void);
 
     /**
      * Get the reply packet mac header.
      *
      * \return The packet reply mac header.
      */
-    LorawanMacHeader GetReplyMacHeader() const;
+    LorawanMacHeader GetReplyMacHeader(void);
 
     /**
      * Get the reply packet frame header.
      *
      * \return The packet reply frame header.
      */
-    LoraFrameHeader GetReplyFrameHeader() const;
+    LoraFrameHeader GetReplyFrameHeader(void);
 
     /**
      * Get the data of the reply packet.
      *
      * \return A pointer to the packet reply.
      */
-    Ptr<Packet> GetReplyPayload();
+    Ptr<Packet> GetReplyPayload(void);
 
     /***********************************/
     /* Received packet list management */
@@ -169,8 +169,8 @@ class EndDeviceStatus : public Object
     struct ReceivedPacketInfo
     {
         // Members
-        Ptr<const Packet> packet = nullptr; //!< The received packet
-        GatewayList gwList;                 //!< List of gateways that received this packet.
+        Ptr<const Packet> packet = 0; //!< The received packet
+        GatewayList gwList;           //!< List of gateways that received this packet.
         uint8_t sf;
         double frequency;
     };
@@ -181,24 +181,24 @@ class EndDeviceStatus : public Object
     /* Proper EndDeviceStatus class definition */
     /*******************************************/
 
-    static TypeId GetTypeId();
+    static TypeId GetTypeId(void);
 
     EndDeviceStatus();
     EndDeviceStatus(LoraDeviceAddress endDeviceAddress,
                     Ptr<ClassAEndDeviceLorawanMac> endDeviceMac);
-    ~EndDeviceStatus() override;
+    virtual ~EndDeviceStatus();
 
     /**
      * Get the spreading factor this device is using in the first receive window.
      *
      * \return An unsigned 8-bit integer containing the spreading factor.
      */
-    uint8_t GetFirstReceiveWindowSpreadingFactor() const;
+    uint8_t GetFirstReceiveWindowSpreadingFactor(void);
 
     /**
      * Get the first window frequency of this device.
      */
-    double GetFirstReceiveWindowFrequency() const;
+    double GetFirstReceiveWindowFrequency(void);
 
     /**
      * Get the offset of spreading factor this device is using in the second
@@ -206,20 +206,20 @@ class EndDeviceStatus : public Object
      *
      * \return An unsigned 8-bit integer containing the spreading factor.
      */
-    uint8_t GetSecondReceiveWindowOffset() const;
+    uint8_t GetSecondReceiveWindowOffset(void);
 
     /**
      * Return the second window frequency of this device.
      *
      */
-    double GetSecondReceiveWindowFrequency() const;
+    double GetSecondReceiveWindowFrequency(void);
 
     /**
      * Get the received packet list.
      *
      * \return The received packet list.
      */
-    ReceivedPacketList GetReceivedPacketList() const;
+    ReceivedPacketList GetReceivedPacketList(void);
 
     /**
      * Set the spreading factor this device is using in the first receive window.
@@ -256,7 +256,7 @@ class EndDeviceStatus : public Object
      */
     void SetReplyPayload(Ptr<Packet> replyPayload);
 
-    Ptr<ClassAEndDeviceLorawanMac> GetMac();
+    Ptr<ClassAEndDeviceLorawanMac> GetMac(void);
 
     //////////////////////
     //  Other methods  //
@@ -270,18 +270,18 @@ class EndDeviceStatus : public Object
     /**
      * Return the last packet that was received from this device.
      */
-    Ptr<const Packet> GetLastPacketReceivedFromDevice();
+    Ptr<const Packet> GetLastPacketReceivedFromDevice(void);
 
     /**
      * Return the information about the last packet that was received from the
      * device.
      */
-    EndDeviceStatus::ReceivedPacketInfo GetLastReceivedPacketInfo();
+    EndDeviceStatus::ReceivedPacketInfo GetLastReceivedPacketInfo(void);
 
     /**
      * Initialize reply.
      */
-    void InitializeReply();
+    void InitializeReply(void);
 
     /**
      * Add MAC command to the list.
@@ -300,18 +300,48 @@ class EndDeviceStatus : public Object
 
     void SetReceiveWindowOpportunity(EventId event);
 
-    void RemoveReceiveWindowOpportunity();
+    void RemoveReceiveWindowOpportunity(void);
 
     /**
      * Return an ordered list of the best gateways.
      */
-    std::map<double, Address> GetPowerGatewayMap();
+    std::map<double, Address> GetPowerGatewayMap(void);
 
     struct Reply m_reply; //<! Next reply intended for this device
 
     LoraDeviceAddress m_endDeviceAddress; //<! The address of this device
 
     friend std::ostream& operator<<(std::ostream& os, const EndDeviceStatus& status);
+
+    /**
+     * Get the remaining number of ping slots that the node needs to open
+     */
+    uint8_t GetCounterPingSlot(void);
+
+    /**
+     * Set the remaining number of ping slots that the node needs to open
+     */
+    void SetCounterPingSlot(uint8_t new_ping);
+
+    /**
+     * Get freq used for the DL of ping slot
+     */
+    double GetPingSlotFreq(void);
+
+    /**
+     * Set freq used for the DL of ping slot
+     */
+    void SetPingSlotFreq(double new_freq);
+
+    /**
+     * Get freq used for the DL of bcn
+     */
+    double GetBeaconFreq(void);
+
+    /**
+     * Set freq used for the DL of bcn
+     */
+    void SetBeaconFreq(double new_freq);
 
   private:
     // Receive window data
@@ -326,6 +356,16 @@ class EndDeviceStatus : public Object
     // NOTE Using this attribute is 'cheating', since we are assuming perfect
     // synchronization between the info at the device and at the network server
     Ptr<ClassAEndDeviceLorawanMac> m_mac; //!< Pointer to the MAC layer of this device
+    
+    /**
+     * The remaining number of ping slots that the node needs to open
+     * 
+     */
+    uint8_t m_counterPingSlot;
+
+    double m_beaconFreq;
+    double m_pingSlotFreq;
+
 };
 } // namespace lorawan
 

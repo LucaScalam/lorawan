@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -21,6 +22,7 @@
 #define PERIODIC_SENDER_H
 
 #include "lorawan-mac.h"
+#include "class-a-end-device-lorawan-mac.h"
 
 #include "ns3/application.h"
 #include "ns3/attribute.h"
@@ -35,21 +37,21 @@ class PeriodicSender : public Application
 {
   public:
     PeriodicSender();
-    ~PeriodicSender() override;
+    ~PeriodicSender();
 
-    static TypeId GetTypeId();
+    static TypeId GetTypeId(void);
 
     /**
      * Set the sending interval
-     * \param interval the interval between two packet send instances
+     * \param interval the interval between two packet sendings
      */
     void SetInterval(Time interval);
 
     /**
-     * Get the sending interval
+     * Get the sending inteval
      * \returns the interval between two packet sends
      */
-    Time GetInterval() const;
+    Time GetInterval(void) const;
 
     /**
      * Set the initial delay of this application
@@ -69,17 +71,17 @@ class PeriodicSender : public Application
     /**
      * Send a packet using the LoraNetDevice's Send method
      */
-    void SendPacket();
+    void SendPacket(void);
 
     /**
      * Start the application by scheduling the first SendPacket event
      */
-    void StartApplication() override;
+    void StartApplication(void);
 
     /**
      * Stop the application
      */
-    void StopApplication() override;
+    void StopApplication(void);
 
   private:
     /**

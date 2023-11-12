@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -45,6 +46,7 @@ class LorawanMacHelper
     {
         GW,
         ED_A
+        // ED_B,
     };
 
     /**

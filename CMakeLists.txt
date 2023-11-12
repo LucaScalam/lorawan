@@ -46,6 +46,7 @@ set(source_files
     helper/forwarder-helper.cc
     helper/network-server-helper.cc
     helper/lora-packet-tracker.cc
+    model/offset_struct.cc
 )
 
 set(header_files
@@ -97,6 +98,7 @@ set(header_files
     helper/network-server-helper.h
     helper/lora-packet-tracker.h
     test/utilities.h
+    model/offset_struct.h
 )
 
 build_lib(

@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -76,6 +77,7 @@ LorawanMacHelper::SetRegion(enum LorawanMacHelper::Regions region)
 Ptr<LorawanMac>
 LorawanMacHelper::Create(Ptr<Node> node, Ptr<NetDevice> device) const
 {
+    NS_LOG_FUNCTION(this);
     Ptr<LorawanMac> mac = m_mac.Create<LorawanMac>();
     mac->SetDevice(device);
 
@@ -236,7 +238,8 @@ LorawanMacHelper::ApplyCommonAlohaConfigurations(Ptr<LorawanMac> lorawanMac) con
 void
 LorawanMacHelper::ConfigureForEuRegion(Ptr<ClassAEndDeviceLorawanMac> edMac) const
 {
-    NS_LOG_FUNCTION_NOARGS();
+    NS_LOG_FUNCTION(this << edMac);
+    // NS_LOG_FUNCTION_NOARGS();
 
     ApplyCommonEuConfigurations(edMac);
 
@@ -268,12 +271,14 @@ LorawanMacHelper::ConfigureForEuRegion(Ptr<ClassAEndDeviceLorawanMac> edMac) con
     //////////////////////////////////////
     edMac->SetSecondReceiveWindowDataRate(0);
     edMac->SetSecondReceiveWindowFrequency(869.525);
+    NS_LOG_DEBUG(this << " Ending ConfigureForEuRegion - ED");
 }
 
 void
 LorawanMacHelper::ConfigureForEuRegion(Ptr<GatewayLorawanMac> gwMac) const
 {
     NS_LOG_FUNCTION_NOARGS();
+    NS_LOG_FUNCTION(this << gwMac);
 
     ///////////////////////////////
     // ReceivePath configuration //
@@ -289,14 +294,29 @@ LorawanMacHelper::ConfigureForEuRegion(Ptr<GatewayLorawanMac> gwMac) const
         gwPhy->ResetReceptionPaths();
 
         std::vector<double> frequencies;
-        frequencies.push_back(868.1);
-        frequencies.push_back(868.3);
-        frequencies.push_back(868.5);
+        // frequencies.push_back(867.1);
+        // frequencies.push_back(867.3);
+        // frequencies.push_back(867.5);
+        // frequencies.push_back(867.7);
+        // frequencies.push_back(867.9);
 
-        for (auto& f : frequencies)
-        {
-            gwPhy->AddFrequency(f);
-        }
+        /**
+         * 
+         * 
+        // The following is already done inside LoraPhyHelper::Create()
+         * 
+         * 
+        */
+
+        // The default ones are already added within ApplyCommonEuConfigurations()
+        // frequencies.push_back(868.1);
+        // frequencies.push_back(868.3);
+        // frequencies.push_back(868.5);
+
+        // for (auto& f : frequencies)
+        // {
+        //     gwPhy->AddFrequency(f);
+        // }
 
         int receptionPaths = 0;
         int maxReceptionPaths = 8;
@@ -306,18 +326,21 @@ LorawanMacHelper::ConfigureForEuRegion(Ptr<GatewayLorawanMac> gwMac) const
             receptionPaths++;
         }
     }
+    NS_LOG_DEBUG(this << " Ending ConfigureForEuRegion - GW");
 }
 
 void
 LorawanMacHelper::ApplyCommonEuConfigurations(Ptr<LorawanMac> lorawanMac) const
 {
     NS_LOG_FUNCTION_NOARGS();
+    NS_LOG_FUNCTION(this << lorawanMac);
 
     //////////////
     // SubBands //
     //////////////
 
     LogicalLoraChannelHelper channelHelper;
+    channelHelper.AddSubBand(865, 868, 0.01, 14);
     channelHelper.AddSubBand(868, 868.6, 0.01, 14);
     channelHelper.AddSubBand(868.7, 869.2, 0.001, 14);
     channelHelper.AddSubBand(869.4, 869.65, 0.1, 27);
@@ -328,9 +351,19 @@ LorawanMacHelper::ApplyCommonEuConfigurations(Ptr<LorawanMac> lorawanMac) const
     Ptr<LogicalLoraChannel> lc1 = CreateObject<LogicalLoraChannel>(868.1, 0, 5);
     Ptr<LogicalLoraChannel> lc2 = CreateObject<LogicalLoraChannel>(868.3, 0, 5);
     Ptr<LogicalLoraChannel> lc3 = CreateObject<LogicalLoraChannel>(868.5, 0, 5);
+    Ptr<LogicalLoraChannel> lc4 = CreateObject<LogicalLoraChannel>(867.1, 0, 5);
+    Ptr<LogicalLoraChannel> lc5 = CreateObject<LogicalLoraChannel>(867.3, 0, 5);
+    Ptr<LogicalLoraChannel> lc6 = CreateObject<LogicalLoraChannel>(867.5, 0, 5);
+    Ptr<LogicalLoraChannel> lc7 = CreateObject<LogicalLoraChannel>(867.7, 0, 5);
+    Ptr<LogicalLoraChannel> lc8 = CreateObject<LogicalLoraChannel>(867.9, 0, 5);
     channelHelper.AddChannel(lc1);
     channelHelper.AddChannel(lc2);
     channelHelper.AddChannel(lc3);
+    channelHelper.AddChannel(lc4);
+    channelHelper.AddChannel(lc5);
+    channelHelper.AddChannel(lc6);
+    channelHelper.AddChannel(lc7);
+    channelHelper.AddChannel(lc8);
 
     lorawanMac->SetLogicalLoraChannelHelper(channelHelper);
 
@@ -343,6 +376,7 @@ LorawanMacHelper::ApplyCommonEuConfigurations(Ptr<LorawanMac> lorawanMac) const
         std::vector<double>{125000, 125000, 125000, 125000, 125000, 125000, 250000});
     lorawanMac->SetMaxAppPayloadForDataRate(
         std::vector<uint32_t>{59, 59, 59, 123, 230, 230, 230, 230});
+        NS_LOG_DEBUG(this << " Ending ApplyCommonEuConfigurations");
 }
 
 ///////////////////////////////
@@ -461,7 +495,7 @@ LorawanMacHelper::SetSpreadingFactorsUp(NodeContainer endDevices,
     NS_LOG_FUNCTION_NOARGS();
 
     std::vector<int> sfQuantity(7, 0);
-    for (auto j = endDevices.Begin(); j != endDevices.End(); ++j)
+    for (NodeContainer::Iterator j = endDevices.Begin(); j != endDevices.End(); ++j)
     {
         Ptr<Node> object = *j;
         Ptr<MobilityModel> position = object->GetObject<MobilityModel>();
@@ -478,14 +512,15 @@ LorawanMacHelper::SetSpreadingFactorsUp(NodeContainer endDevices,
         Ptr<MobilityModel> bestGatewayPosition = bestGateway->GetObject<MobilityModel>();
 
         // Assume devices transmit at 14 dBm
-        double highestRxPower = channel->GetRxPower(14, position, bestGatewayPosition);
+        double highestRxPower = channel->GetRxPowerPaperMetric(14, position, bestGatewayPosition);
 
-        for (auto currentGw = gateways.Begin() + 1; currentGw != gateways.End(); ++currentGw)
+        for (NodeContainer::Iterator currentGw = gateways.Begin() + 1; currentGw != gateways.End();
+             ++currentGw)
         {
             // Compute the power received from the current gateway
             Ptr<Node> curr = *currentGw;
             Ptr<MobilityModel> currPosition = curr->GetObject<MobilityModel>();
-            double currentRxPower = channel->GetRxPower(14, position, currPosition); // dBm
+            double currentRxPower = channel->GetRxPowerPaperMetric(14, position, currPosition); // dBm
 
             if (currentRxPower > highestRxPower)
             {
@@ -495,7 +530,7 @@ LorawanMacHelper::SetSpreadingFactorsUp(NodeContainer endDevices,
             }
         }
 
-        // NS_LOG_DEBUG ("Rx Power: " << highestRxPower);
+        NS_LOG_DEBUG ("Rx Power: " << highestRxPower);
         double rxPower = highestRxPower;
 
         // Get the ED sensitivity
@@ -506,6 +541,7 @@ LorawanMacHelper::SetSpreadingFactorsUp(NodeContainer endDevices,
         {
             mac->SetDataRate(5);
             sfQuantity[0] = sfQuantity[0] + 1;
+            
         }
         else if (rxPower > *(edSensitivity + 1))
         {
@@ -619,7 +655,7 @@ LorawanMacHelper::SetSpreadingFactorsGivenDistribution(NodeContainer endDevices,
                                              << cumdistr[2] << " " << cumdistr[3] << " "
                                              << cumdistr[4] << " " << cumdistr[5]);
 
-    for (auto j = endDevices.Begin(); j != endDevices.End(); ++j)
+    for (NodeContainer::Iterator j = endDevices.Begin(); j != endDevices.End(); ++j)
     {
         Ptr<Node> object = *j;
         Ptr<MobilityModel> position = object->GetObject<MobilityModel>();

@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -35,7 +36,7 @@ NS_LOG_COMPONENT_DEFINE("GatewayLorawanMac");
 NS_OBJECT_ENSURE_REGISTERED(GatewayLorawanMac);
 
 TypeId
-GatewayLorawanMac::GetTypeId()
+GatewayLorawanMac::GetTypeId(void)
 {
     static TypeId tid = TypeId("ns3::GatewayLorawanMac")
                             .SetParent<LorawanMac>()
@@ -84,8 +85,9 @@ GatewayLorawanMac::Send(Ptr<Packet> packet)
     params.codingRate = 1;
     params.bandwidthHz = GetBandwidthFromDataRate(dataRate);
     params.nPreamble = 8;
-    params.crcEnabled = true;
-    params.lowDataRateOptimizationEnabled = LoraPhy::GetTSym(params) > MilliSeconds(16);
+    params.crcEnabled = 1;
+    params.lowDataRateOptimizationEnabled =
+        LoraPhy::GetTSym(params) > MilliSeconds(16) ? true : false;
 
     // Get the duration
     Time duration = m_phy->GetOnAirTime(packet, params);
@@ -106,7 +108,7 @@ GatewayLorawanMac::Send(Ptr<Packet> packet)
 }
 
 bool
-GatewayLorawanMac::IsTransmitting()
+GatewayLorawanMac::IsTransmitting(void)
 {
     return m_phy->IsTransmitting();
 }
@@ -153,6 +155,7 @@ Time
 GatewayLorawanMac::GetWaitingTime(double frequency)
 {
     NS_LOG_FUNCTION_NOARGS();
+    // NS_LOG_DEBUG("RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR " << frequency << "\n");
 
     return m_channelHelper.GetWaitingTime(CreateObject<LogicalLoraChannel>(frequency));
 }

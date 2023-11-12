@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -23,6 +24,8 @@
 #ifndef CLASS_A_END_DEVICE_LORAWAN_MAC_H
 #define CLASS_A_END_DEVICE_LORAWAN_MAC_H
 
+#include "offset_struct.h"
+#include "lora-tag.h"
 #include "end-device-lorawan-mac.h" // EndDeviceLorawanMac
 #include "lora-frame-header.h"      // RxParamSetupReq
 #include "lorawan-mac.h"            // Packet
@@ -35,17 +38,22 @@ namespace ns3
 {
 namespace lorawan
 {
-
+    // struct StructTest
+    // {
+    //     uint8_t test_1;
+    //     // Whether or not this device needs a reply
+    //     bool test_2 = false;
+    // };
 /**
  * Class representing the MAC layer of a Class A LoRaWAN device.
  */
 class ClassAEndDeviceLorawanMac : public EndDeviceLorawanMac
 {
   public:
-    static TypeId GetTypeId();
+    static TypeId GetTypeId(void);
 
     ClassAEndDeviceLorawanMac();
-    ~ClassAEndDeviceLorawanMac() override;
+    virtual ~ClassAEndDeviceLorawanMac();
 
     /////////////////////
     // Sending methods //
@@ -56,7 +64,7 @@ class ClassAEndDeviceLorawanMac : public EndDeviceLorawanMac
      *
      * \param packet the packet to send
      */
-    void SendToPhy(Ptr<Packet> packet) override;
+    virtual void SendToPhy(Ptr<Packet> packet);
 
     //////////////////////////
     //  Receiving methods   //
@@ -70,36 +78,70 @@ class ClassAEndDeviceLorawanMac : public EndDeviceLorawanMac
      *
      * \param packet the received packet.
      */
-    void Receive(Ptr<const Packet> packet) override;
+    virtual void Receive(Ptr<const Packet> packet);
 
-    void FailedReception(Ptr<const Packet> packet) override;
+    virtual void FailedReception(Ptr<const Packet> packet);
 
     /**
      * Perform the actions that are required after a packet send.
      *
      * This function handles opening of the first receive window.
      */
-    void TxFinished(Ptr<const Packet> packet) override;
+    virtual void TxFinished(Ptr<const Packet> packet);
 
     /**
      * Perform operations needed to open the first receive window.
      */
-    void OpenFirstReceiveWindow();
+    void OpenFirstReceiveWindow(void);
 
     /**
      * Perform operations needed to open the second receive window.
      */
-    void OpenSecondReceiveWindow();
+    void OpenSecondReceiveWindow(void);
 
     /**
      * Perform operations needed to close the first receive window.
      */
-    void CloseFirstReceiveWindow();
+    void CloseFirstReceiveWindow(void);
 
     /**
      * Perform operations needed to close the second receive window.
      */
-    void CloseSecondReceiveWindow();
+    void CloseSecondReceiveWindow(void);
+
+    /**
+     * 
+     */
+    void OpenPingSlotWindow(void);
+
+    /**
+     * 
+     */
+    void OpenBeaconWindow(void);
+
+    /**
+     * 
+     */
+    void ClosePingSlotWindow(void);
+
+    /**
+     *
+     */
+    void CloseBeaconWindow(void);
+    
+    /**
+     *
+     */
+    void OffsetCalculation(void);
+
+    void SetOffsetData(Ptr<StructTest> data);
+    
+    Ptr<StructTest> GetOffsetData();
+
+    void UpdatePingSlotFreq();
+
+    void UpdateBeaconFreq();
+
 
     /////////////////////////
     // Getters and Setters //
@@ -112,14 +154,14 @@ class ClassAEndDeviceLorawanMac : public EndDeviceLorawanMac
      * \param waitingTime The minimum waiting time that has to be respected,
      * irrespective of the class (e.g., because of duty cycle limitations).
      */
-    Time GetNextClassTransmissionDelay(Time waitingTime) override;
+    virtual Time GetNextClassTransmissionDelay(Time waitingTime);
 
     /**
      * Get the Data Rate that will be used in the first receive window.
      *
      * \return The Data Rate
      */
-    uint8_t GetFirstReceiveWindowDataRate();
+    uint8_t GetFirstReceiveWindowDataRate(void);
 
     /**
      * Set the Data Rate to be used in the second receive window.
@@ -133,7 +175,7 @@ class ClassAEndDeviceLorawanMac : public EndDeviceLorawanMac
      *
      * \return The Data Rate
      */
-    uint8_t GetSecondReceiveWindowDataRate() const;
+    uint8_t GetSecondReceiveWindowDataRate(void);
 
     /**
      * Set the frequency that will be used for the second receive window.
@@ -147,7 +189,7 @@ class ClassAEndDeviceLorawanMac : public EndDeviceLorawanMac
      *
      * @return The frequency, in MHz
      */
-    double GetSecondReceiveWindowFrequency() const;
+    double GetSecondReceiveWindowFrequency(void);
 
     /////////////////////////
     // MAC command methods //
@@ -162,7 +204,7 @@ class ClassAEndDeviceLorawanMac : public EndDeviceLorawanMac
      *                            - The data rate to use for the second receive window.
      *                            - The frequency to use for the second receive window.
      */
-    void OnRxClassParamSetupReq(Ptr<RxParamSetupReq> rxParamSetupReq) override;
+    virtual void OnRxClassParamSetupReq(Ptr<RxParamSetupReq> rxParamSetupReq);
 
   private:
     /**
@@ -213,6 +255,77 @@ class ClassAEndDeviceLorawanMac : public EndDeviceLorawanMac
      * The RX1DROffset parameter value
      */
     uint8_t m_rx1DrOffset;
+
+    // /**
+    //  * The event of the closing the ping slot window.
+    //  *
+    //  * This Event will be canceled if there's a successful reception of a packet.
+    //  */
+    // EventId m_closePingSlotWindow;
+
+     /**
+     * The remaining number of ping slots that the node needs to open
+     */
+    uint8_t m_counterPingSlot;
+
+    /**
+     * Duration of a slot from the beacon period architecture. By standard,
+     * it has a value of 30ms.
+     */
+    Time m_slotDuration;
+    
+    /**
+     * K parameter value from [0,7]. 2**k represents the number of ping slot the
+     * node will open within one beacon period
+     */
+    uint8_t m_kParameter;
+
+    // /**
+    //  * Reference to the last event created inside the beacon period loop
+    //  */
+    // EventId m_lastBeaconRelatedEVent;
+
+    /**
+     * Moment in time in which the beacon period started
+     */
+    Time m_startBeaconPeriod;
+
+    /**
+     * Duration of the beacon period
+     */
+    Time m_beaconPeriod;
+
+    /**
+     * Duration of the beacon reserved period
+     */
+    Time m_beaconReserved;
+
+    /**
+     * Duration of the pseudo random offset at the beginning of the first slot ping window
+     */
+    Time m_offset;
+
+    /**
+     * The frequency to listen on for the beacon Rx
+     */
+    double m_beaconFrequency;
+
+    /**
+     * The Data Rate to listen for during the beacon Rx
+     */
+    uint8_t m_beaconDataRate;
+
+    /**
+     * The frequency to listen on for the ping slot window
+     */
+    double m_pingSlotFrequency;
+
+    /**
+     * The Data Rate to listen for during the ping slot window
+     */
+    uint8_t m_pingSlotDataRate;
+
+    Ptr<StructTest> m_offsetData;
 
 }; /* ClassAEndDeviceLorawanMac */
 } /* namespace lorawan */

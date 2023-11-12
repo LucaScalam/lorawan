@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -40,7 +41,7 @@ namespace lorawan
 NS_LOG_COMPONENT_DEFINE("EndDeviceStatus");
 
 TypeId
-EndDeviceStatus::GetTypeId()
+EndDeviceStatus::GetTypeId(void)
 {
     static TypeId tid = TypeId("ns3::EndDeviceStatus")
                             .SetParent<Object>()
@@ -78,7 +79,7 @@ EndDeviceStatus::~EndDeviceStatus()
 ///////////////
 
 uint8_t
-EndDeviceStatus::GetFirstReceiveWindowSpreadingFactor() const
+EndDeviceStatus::GetFirstReceiveWindowSpreadingFactor()
 {
     NS_LOG_FUNCTION_NOARGS();
 
@@ -86,7 +87,7 @@ EndDeviceStatus::GetFirstReceiveWindowSpreadingFactor() const
 }
 
 double
-EndDeviceStatus::GetFirstReceiveWindowFrequency() const
+EndDeviceStatus::GetFirstReceiveWindowFrequency()
 {
     NS_LOG_FUNCTION_NOARGS();
 
@@ -94,7 +95,7 @@ EndDeviceStatus::GetFirstReceiveWindowFrequency() const
 }
 
 uint8_t
-EndDeviceStatus::GetSecondReceiveWindowOffset() const
+EndDeviceStatus::GetSecondReceiveWindowOffset()
 {
     NS_LOG_FUNCTION_NOARGS();
 
@@ -102,14 +103,14 @@ EndDeviceStatus::GetSecondReceiveWindowOffset() const
 }
 
 double
-EndDeviceStatus::GetSecondReceiveWindowFrequency() const
+EndDeviceStatus::GetSecondReceiveWindowFrequency()
 {
     NS_LOG_FUNCTION_NOARGS();
     return m_secondReceiveWindowFrequency;
 }
 
 Ptr<Packet>
-EndDeviceStatus::GetCompleteReplyPacket()
+EndDeviceStatus::GetCompleteReplyPacket(void)
 {
     NS_LOG_FUNCTION_NOARGS();
 
@@ -146,7 +147,7 @@ EndDeviceStatus::GetCompleteReplyPacket()
 }
 
 bool
-EndDeviceStatus::NeedsReply() const
+EndDeviceStatus::NeedsReply(void)
 {
     NS_LOG_FUNCTION_NOARGS();
 
@@ -154,34 +155,34 @@ EndDeviceStatus::NeedsReply() const
 }
 
 LorawanMacHeader
-EndDeviceStatus::GetReplyMacHeader() const
+EndDeviceStatus::GetReplyMacHeader()
 {
     NS_LOG_FUNCTION_NOARGS();
     return m_reply.macHeader;
 }
 
 LoraFrameHeader
-EndDeviceStatus::GetReplyFrameHeader() const
+EndDeviceStatus::GetReplyFrameHeader()
 {
     NS_LOG_FUNCTION_NOARGS();
     return m_reply.frameHeader;
 }
 
 Ptr<Packet>
-EndDeviceStatus::GetReplyPayload()
+EndDeviceStatus::GetReplyPayload(void)
 {
     NS_LOG_FUNCTION_NOARGS();
     return m_reply.payload->Copy();
 }
 
 Ptr<ClassAEndDeviceLorawanMac>
-EndDeviceStatus::GetMac()
+EndDeviceStatus::GetMac(void)
 {
     return m_mac;
 }
 
 EndDeviceStatus::ReceivedPacketList
-EndDeviceStatus::GetReceivedPacketList() const
+EndDeviceStatus::GetReceivedPacketList()
 {
     NS_LOG_FUNCTION_NOARGS();
     return m_receivedPacketList;
@@ -317,13 +318,14 @@ EndDeviceStatus::InsertReceivedPacket(Ptr<const Packet> receivedPacket, const Ad
         gwInfo.rxPower = rcvPower;
         gwInfo.gwAddress = gwAddress;
         info.gwList.insert(std::pair<Address, PacketInfoPerGw>(gwAddress, gwInfo));
-        m_receivedPacketList.emplace_back(receivedPacket, info);
+        m_receivedPacketList.push_back(
+            std::pair<Ptr<const Packet>, ReceivedPacketInfo>(receivedPacket, info));
     }
     NS_LOG_DEBUG(*this);
 }
 
 EndDeviceStatus::ReceivedPacketInfo
-EndDeviceStatus::GetLastReceivedPacketInfo()
+EndDeviceStatus::GetLastReceivedPacketInfo(void)
 {
     NS_LOG_FUNCTION_NOARGS();
     auto it = m_receivedPacketList.rbegin();
@@ -338,7 +340,7 @@ EndDeviceStatus::GetLastReceivedPacketInfo()
 }
 
 Ptr<const Packet>
-EndDeviceStatus::GetLastPacketReceivedFromDevice()
+EndDeviceStatus::GetLastPacketReceivedFromDevice(void)
 {
     NS_LOG_FUNCTION_NOARGS();
     auto it = m_receivedPacketList.rbegin();
@@ -348,7 +350,7 @@ EndDeviceStatus::GetLastPacketReceivedFromDevice()
     }
     else
     {
-        return nullptr;
+        return 0;
     }
 }
 
@@ -379,18 +381,22 @@ EndDeviceStatus::SetReceiveWindowOpportunity(EventId event)
 }
 
 void
-EndDeviceStatus::RemoveReceiveWindowOpportunity()
+EndDeviceStatus::RemoveReceiveWindowOpportunity(void)
 {
     Simulator::Cancel(m_receiveWindowEvent);
 }
 
 std::map<double, Address>
-EndDeviceStatus::GetPowerGatewayMap()
+EndDeviceStatus::GetPowerGatewayMap(void)
 {
     // Create a map of the gateways
     // Key: received power
     // Value: address of the corresponding gateway
+    NS_LOG_DEBUG("let's get the last packet received ");
+    // this gets the last packet received
     ReceivedPacketInfo info = m_receivedPacketList.back().second;
+    // This list contains all the GW that got the packet m_receivedPacketList.back().first
+    NS_LOG_DEBUG("let's get the gw that listened to the last packet received ");
     GatewayList gwList = info.gwList;
 
     std::map<double, Address> gatewayPowers;
@@ -416,7 +422,8 @@ operator<<(std::ostream& os, const EndDeviceStatus& status)
         EndDeviceStatus::GatewayList gatewayList = info.gwList;
         Ptr<const Packet> pkt = (*j).first;
         os << pkt << " " << gatewayList.size() << std::endl;
-        for (auto k = gatewayList.begin(); k != gatewayList.end(); k++)
+        for (EndDeviceStatus::GatewayList::iterator k = gatewayList.begin(); k != gatewayList.end();
+             k++)
         {
             EndDeviceStatus::PacketInfoPerGw infoPerGw = (*k).second;
             os << "  " << infoPerGw.gwAddress << " " << infoPerGw.rxPower << std::endl;
@@ -425,5 +432,45 @@ operator<<(std::ostream& os, const EndDeviceStatus& status)
 
     return os;
 }
+
+    /**
+     * 
+     *
+     * 
+     */
+    uint8_t 
+    EndDeviceStatus::GetCounterPingSlot(void)
+    {
+        return m_counterPingSlot;
+    }
+
+    /**
+     * 
+     */
+    void EndDeviceStatus::SetCounterPingSlot(uint8_t new_ping)
+    {
+        m_counterPingSlot = new_ping;
+    }
+
+    double EndDeviceStatus::GetPingSlotFreq(void)
+    {
+        return m_pingSlotFreq;
+    }
+
+    void EndDeviceStatus::SetPingSlotFreq(double new_freq)
+    {
+        m_pingSlotFreq = new_freq;
+    }
+
+    double EndDeviceStatus::GetBeaconFreq(void)
+    {
+        return m_beaconFreq;
+    }
+
+    void EndDeviceStatus::SetBeaconFreq(double new_freq)
+    {
+        m_beaconFreq = new_freq;
+    }
+
 } // namespace lorawan
 } // namespace ns3

@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -26,6 +27,8 @@
 #include "network-controller.h"
 #include "network-status.h"
 
+#include "offset_struct.h"
+#include "ns3/drop-tail-queue.h"
 #include "ns3/core-module.h"
 #include "ns3/object.h"
 #include "ns3/packet.h"
@@ -41,11 +44,11 @@ class NetworkController; // Forward declaration
 class NetworkScheduler : public Object
 {
   public:
-    static TypeId GetTypeId();
+    static TypeId GetTypeId(void);
 
     NetworkScheduler();
     NetworkScheduler(Ptr<NetworkStatus> status, Ptr<NetworkController> controller);
-    ~NetworkScheduler() override;
+    virtual ~NetworkScheduler();
 
     /**
      * Method called by NetworkServer to inform the Scheduler of a newly arrived
@@ -60,10 +63,28 @@ class NetworkScheduler : public Object
      */
     void OnReceiveWindowOpportunity(LoraDeviceAddress deviceAddress, int window);
 
+    void OnReceiveWindowOpportunityBcn(LoraDeviceAddress deviceAddress, int window);
+    void OnReceiveWindowOpportunityPingSlot(LoraDeviceAddress deviceAddress, int window);
+    void Send2Queue(Ptr<Packet> pkt);
+    void SetOffsetData(Ptr<StructTest> data);
+    Ptr<StructTest> GetOffsetData();
+    uint16_t GetDownCounter();
+    void IncrementDownCounter();
+    
   private:
     TracedCallback<Ptr<const Packet>> m_receiveWindowOpened;
     Ptr<NetworkStatus> m_status;
     Ptr<NetworkController> m_controller;
+    
+    /**
+     * Queue for the downlink packets
+     */
+    Ptr<Queue<Packet>> m_queue;
+
+    uint16_t m_bcnCounter;
+    uint16_t m_downCounter;
+    Ptr<StructTest> m_offsetData;
+
 };
 
 } // namespace lorawan

@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -38,29 +39,29 @@ NS_OBJECT_ENSURE_REGISTERED(GatewayLoraPhy);
  *    ReceptionPath implementation    *
  **************************************/
 GatewayLoraPhy::ReceptionPath::ReceptionPath()
-    : m_available(true),
-      m_event(nullptr),
+    : m_available(1),
+      m_event(0),
       m_endReceiveEventId(EventId())
 {
     NS_LOG_FUNCTION_NOARGS();
 }
 
-GatewayLoraPhy::ReceptionPath::~ReceptionPath()
+GatewayLoraPhy::ReceptionPath::~ReceptionPath(void)
 {
     NS_LOG_FUNCTION_NOARGS();
 }
 
 bool
-GatewayLoraPhy::ReceptionPath::IsAvailable() const
+GatewayLoraPhy::ReceptionPath::IsAvailable(void)
 {
     return m_available;
 }
 
 void
-GatewayLoraPhy::ReceptionPath::Free()
+GatewayLoraPhy::ReceptionPath::Free(void)
 {
     m_available = true;
-    m_event = nullptr;
+    m_event = 0;
     m_endReceiveEventId = EventId();
 }
 
@@ -78,13 +79,13 @@ GatewayLoraPhy::ReceptionPath::SetEvent(Ptr<LoraInterferenceHelper::Event> event
 }
 
 Ptr<LoraInterferenceHelper::Event>
-GatewayLoraPhy::ReceptionPath::GetEvent()
+GatewayLoraPhy::ReceptionPath::GetEvent(void)
 {
     return m_event;
 }
 
 EventId
-GatewayLoraPhy::ReceptionPath::GetEndReceive()
+GatewayLoraPhy::ReceptionPath::GetEndReceive(void)
 {
     return m_endReceiveEventId;
 }
@@ -100,7 +101,7 @@ GatewayLoraPhy::ReceptionPath::SetEndReceive(EventId endReceiveEventId)
  ***********************************************************************/
 
 TypeId
-GatewayLoraPhy::GetTypeId()
+GatewayLoraPhy::GetTypeId(void)
 {
     static TypeId tid =
         TypeId("ns3::GatewayLoraPhy")
@@ -150,7 +151,7 @@ GatewayLoraPhy::AddReceptionPath()
 }
 
 void
-GatewayLoraPhy::ResetReceptionPaths()
+GatewayLoraPhy::ResetReceptionPaths(void)
 {
     NS_LOG_FUNCTION(this);
 
@@ -164,7 +165,7 @@ GatewayLoraPhy::TxFinished(Ptr<Packet> packet)
 }
 
 bool
-GatewayLoraPhy::IsTransmitting()
+GatewayLoraPhy::IsTransmitting(void)
 {
     return m_isTransmitting;
 }
@@ -175,6 +176,7 @@ GatewayLoraPhy::AddFrequency(double frequencyMHz)
     NS_LOG_FUNCTION(this << frequencyMHz);
 
     m_frequencies.push_back(frequencyMHz);
+    NS_LOG_DEBUG("m_frequencies.size(): " << m_frequencies.size());
 
     NS_ASSERT(m_frequencies.size() <= 8);
 }

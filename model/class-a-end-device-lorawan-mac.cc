@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -40,7 +41,7 @@ NS_LOG_COMPONENT_DEFINE("ClassAEndDeviceLorawanMac");
 NS_OBJECT_ENSURE_REGISTERED(ClassAEndDeviceLorawanMac);
 
 TypeId
-ClassAEndDeviceLorawanMac::GetTypeId()
+ClassAEndDeviceLorawanMac::GetTypeId(void)
 {
     static TypeId tid = TypeId("ns3::ClassAEndDeviceLorawanMac")
                             .SetParent<EndDeviceLorawanMac>()
@@ -54,7 +55,16 @@ ClassAEndDeviceLorawanMac::ClassAEndDeviceLorawanMac()
       m_receiveDelay1(Seconds(1)),
       // LoraWAN default
       m_receiveDelay2(Seconds(2)),
-      m_rx1DrOffset(0)
+      m_rx1DrOffset(0),
+      m_slotDuration(Seconds(.03)),
+      m_kParameter(4),
+      m_beaconPeriod(Seconds(128)),
+      m_beaconReserved(Seconds(2.12)),
+      m_beaconFrequency(869.525),
+      m_beaconDataRate(3),
+      m_pingSlotFrequency(869.525),
+      m_pingSlotDataRate(3)
+
 {
     NS_LOG_FUNCTION(this);
 
@@ -65,6 +75,23 @@ ClassAEndDeviceLorawanMac::ClassAEndDeviceLorawanMac()
     m_closeSecondWindow.Cancel();
     m_secondReceiveWindow = EventId();
     m_secondReceiveWindow.Cancel();
+
+    // std::string m_CSVfileName{"node.csv"}; //!< CSV filename.
+    NS_LOG_DEBUG("TTTTTTTTTTTTTTTTTTTT m_add" << m_address << "to string: " << std::to_string(m_address.Get()));
+    std::string m_CSVfileName = std::string("./scratch/node_") + std::to_string(m_address.Get()) + std::string(".csv") ;
+    // std::string m_CSVfileName{"manet-routing.output.csv"}; //!< CSV filename.
+
+    // std::ofstream out(m_CSVfileName, std::ios::app);
+
+    std::ofstream out(m_CSVfileName);
+    out << "TimeEnqueued,"
+        << "TimeDequeued,"
+        << "TransmissionPower" << std::endl;
+    out.close();
+
+
+// out << (Simulator::Now()).GetSeconds() << "," << kbs << "," << packetsReceived << ","
+//     << m_nSinks << "," << m_protocolName << "," << m_txp << "" << std::endl;
 }
 
 ClassAEndDeviceLorawanMac::~ClassAEndDeviceLorawanMac()
@@ -100,8 +127,9 @@ ClassAEndDeviceLorawanMac::SendToPhy(Ptr<Packet> packetToSend)
     params.codingRate = m_codingRate;
     params.bandwidthHz = GetBandwidthFromDataRate(m_dataRate);
     params.nPreamble = m_nPreambleSymbols;
-    params.crcEnabled = true;
-    params.lowDataRateOptimizationEnabled = LoraPhy::GetTSym(params) > MilliSeconds(16);
+    params.crcEnabled = 1;
+    params.lowDataRateOptimizationEnabled =
+        LoraPhy::GetTSym(params) > MilliSeconds(16) ? true : false;
 
     // Wake up PHY layer and directly send the packet
 
@@ -145,7 +173,6 @@ ClassAEndDeviceLorawanMac::Receive(Ptr<const Packet> packet)
 {
     NS_LOG_FUNCTION(this << packet);
 
-    // Work on a copy of the packet
     Ptr<Packet> packetCopy = packet->Copy();
 
     // Remove the Mac Header to get some information
@@ -176,6 +203,18 @@ ClassAEndDeviceLorawanMac::Receive(Ptr<const Packet> packet)
             // If it exists, cancel the second receive window event
             // THIS WILL BE GetReceiveWindow()
             Simulator::Cancel(m_secondReceiveWindow);
+
+            // Parse the MAC commands
+            ParseCommands(fHdr);
+
+            // TODO Pass the packet up to the NetDevice
+
+            // Call the trace source
+            m_receivedPacket(packet);
+        }
+        else if (mHdr.GetMType() == LorawanMacHeader::BEACON)
+        {
+            NS_LOG_INFO("The message is a beacon!");
 
             // Parse the MAC commands
             ParseCommands(fHdr);
@@ -297,7 +336,7 @@ ClassAEndDeviceLorawanMac::TxFinished(Ptr<const Packet> packet)
 }
 
 void
-ClassAEndDeviceLorawanMac::OpenFirstReceiveWindow()
+ClassAEndDeviceLorawanMac::OpenFirstReceiveWindow(void)
 {
     NS_LOG_FUNCTION_NOARGS();
 
@@ -317,7 +356,7 @@ ClassAEndDeviceLorawanMac::OpenFirstReceiveWindow()
 }
 
 void
-ClassAEndDeviceLorawanMac::CloseFirstReceiveWindow()
+ClassAEndDeviceLorawanMac::CloseFirstReceiveWindow(void)
 {
     NS_LOG_FUNCTION_NOARGS();
 
@@ -347,8 +386,158 @@ ClassAEndDeviceLorawanMac::CloseFirstReceiveWindow()
     }
 }
 
+void 
+ClassAEndDeviceLorawanMac::SetOffsetData(Ptr<StructTest> data)
+{
+    m_offsetData = data;
+}
+    
+Ptr<StructTest> 
+ClassAEndDeviceLorawanMac::GetOffsetData()
+{
+    return m_offsetData;
+}
+
 void
-ClassAEndDeviceLorawanMac::OpenSecondReceiveWindow()
+ClassAEndDeviceLorawanMac::OpenPingSlotWindow(void)
+{
+    NS_LOG_FUNCTION_NOARGS();
+
+    // Update the most recent frequency used for the ping slot
+    UpdatePingSlotFreq();
+    // Set Phy in Standby mode
+    m_phy->GetObject<EndDeviceLoraPhy>()->SwitchToStandby();
+    m_phy->GetObject<EndDeviceLoraPhy>()->SetFrequency(m_pingSlotFrequency);
+    m_phy->GetObject<EndDeviceLoraPhy>()->SetSpreadingFactor(GetSfFromDataRate(m_pingSlotDataRate));
+
+    Simulator::Schedule(m_slotDuration,
+                        &ClassAEndDeviceLorawanMac::ClosePingSlotWindow,
+                        this); 
+}
+
+void
+ClassAEndDeviceLorawanMac::OpenBeaconWindow()
+{
+    NS_LOG_FUNCTION_NOARGS();
+
+    // Update the most recent frequency used for the beacon
+    UpdateBeaconFreq();
+    // Set Phy in Standby mode
+    m_phy->GetObject<EndDeviceLoraPhy>()->SwitchToStandby();
+    m_phy->GetObject<EndDeviceLoraPhy>()->SetFrequency(m_beaconFrequency);
+    m_phy->GetObject<EndDeviceLoraPhy>()->SetSpreadingFactor(GetSfFromDataRate(m_beaconDataRate));
+
+    m_startBeaconPeriod = Simulator::Now();
+
+    Simulator::Schedule(m_beaconReserved,
+                        &ClassAEndDeviceLorawanMac::CloseBeaconWindow,
+                        this); 
+}
+
+void
+ClassAEndDeviceLorawanMac::ClosePingSlotWindow(void)
+{
+    NS_LOG_FUNCTION_NOARGS();
+
+    Ptr<EndDeviceLoraPhy> phy = m_phy->GetObject<EndDeviceLoraPhy>();
+
+    // Check the Phy layer's state:
+    // - RX -> We are receiving a preamble.
+    // - STANDBY -> Nothing was received.
+    // - SLEEP -> We have received a packet.
+    // We should never be in TX or SLEEP mode at this point
+    switch (phy->GetState())
+    {
+    case EndDeviceLoraPhy::TX:
+        NS_ABORT_MSG("PHY was in TX mode when attempting to "
+                     << "close a receive window.");
+        break;
+    case EndDeviceLoraPhy::RX:
+        // PHY is receiving: let it finish. The Receive method will switch it back to SLEEP.
+        break;
+    case EndDeviceLoraPhy::SLEEP:
+        // PHY has received, and the MAC's Receive already put the device to sleep
+        break;
+    case EndDeviceLoraPhy::STANDBY:
+        // Turn PHY layer to SLEEP
+        phy->SwitchToSleep();
+        break;
+    }
+    
+    m_counterPingSlot--;
+    NS_LOG_DEBUG("For device -> "<< m_address << ", counterPingSlot left -> " << unsigned(m_counterPingSlot));
+    if (m_counterPingSlot == 0) {
+        Simulator::Schedule(m_beaconPeriod - (Simulator::Now() - m_startBeaconPeriod),
+                            &ClassAEndDeviceLorawanMac::OpenBeaconWindow,
+                            this); 
+    }
+    else{
+        Simulator::Schedule(m_slotDuration * ((1 << (12 - m_kParameter)) - 1),
+                            &ClassAEndDeviceLorawanMac::OpenPingSlotWindow,
+                            this); 
+    }
+}
+
+void
+ClassAEndDeviceLorawanMac::CloseBeaconWindow(void)
+{
+    NS_LOG_FUNCTION_NOARGS();
+
+    Ptr<EndDeviceLoraPhy> phy = m_phy->GetObject<EndDeviceLoraPhy>();
+
+    // Check the Phy layer's state:
+    // - RX -> We are receiving a preamble.
+    // - STANDBY -> Nothing was received.
+    // - SLEEP -> We have received a packet.
+    // We should never be in TX or SLEEP mode at this point
+    switch (phy->GetState())
+    {
+    case EndDeviceLoraPhy::TX:
+        NS_ABORT_MSG("PHY was in TX mode when attempting to "
+                     << "close a receive window.");
+        break;
+    case EndDeviceLoraPhy::RX:
+        // PHY is receiving: let it finish. The Receive method will switch it back to SLEEP.
+        break;
+    case EndDeviceLoraPhy::SLEEP:
+        // PHY has received, and the MAC's Receive already put the device to sleep
+        break;
+    case EndDeviceLoraPhy::STANDBY:
+        // Turn PHY layer to SLEEP
+        phy->SwitchToSleep();
+        break;
+    }
+    
+    m_counterPingSlot = 1 << m_kParameter;
+    NS_LOG_DEBUG("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA        aaaaaaaaaaaaa devAdd): " << m_offsetData->m_endDevicesOffset.find(m_address)->first);
+    NS_LOG_DEBUG("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA        aaaaaaaaaaaaa offset: " << unsigned(m_offsetData->m_endDevicesOffset.find(m_address)->second));
+    Simulator::Schedule(m_offsetData->m_endDevicesOffset.find(m_address)->second * m_slotDuration,
+                        &ClassAEndDeviceLorawanMac::OpenPingSlotWindow,
+                        this); 
+}
+
+void
+ClassAEndDeviceLorawanMac::OffsetCalculation(void)
+{
+    NS_LOG_FUNCTION_NOARGS();
+
+    m_offset = Seconds(0.06);
+}
+
+void 
+ClassAEndDeviceLorawanMac::UpdatePingSlotFreq()
+{
+    m_pingSlotFrequency = m_offsetData->m_endDevicesFreq.find(m_address)->second;
+}
+
+void 
+ClassAEndDeviceLorawanMac::UpdateBeaconFreq()
+{
+    m_beaconFrequency = m_offsetData->GetBeaconFreq();
+}
+
+void
+ClassAEndDeviceLorawanMac::OpenSecondReceiveWindow(void)
 {
     NS_LOG_FUNCTION_NOARGS();
 
@@ -385,7 +574,7 @@ ClassAEndDeviceLorawanMac::OpenSecondReceiveWindow()
 }
 
 void
-ClassAEndDeviceLorawanMac::CloseSecondReceiveWindow()
+ClassAEndDeviceLorawanMac::CloseSecondReceiveWindow(void)
 {
     NS_LOG_FUNCTION_NOARGS();
 
@@ -451,6 +640,7 @@ ClassAEndDeviceLorawanMac::CloseSecondReceiveWindow()
         // Reset retransmission parameters
         resetRetransmissionParameters();
     }
+
 }
 
 /////////////////////////
@@ -463,7 +653,7 @@ ClassAEndDeviceLorawanMac::GetNextClassTransmissionDelay(Time waitingTime)
     NS_LOG_FUNCTION_NOARGS();
 
     // This is a new packet from APP; it can not be sent until the end of the
-    // second receive window (if the second receive window has not closed yet)
+    // second receive window (if the second recieve window has not closed yet)
     if (!m_retxParams.waitingAck)
     {
         if (!m_closeFirstWindow.IsExpired() || !m_closeSecondWindow.IsExpired() ||
@@ -502,7 +692,7 @@ ClassAEndDeviceLorawanMac::GetNextClassTransmissionDelay(Time waitingTime)
 }
 
 uint8_t
-ClassAEndDeviceLorawanMac::GetFirstReceiveWindowDataRate()
+ClassAEndDeviceLorawanMac::GetFirstReceiveWindowDataRate(void)
 {
     return m_replyDataRateMatrix.at(m_dataRate).at(m_rx1DrOffset);
 }
@@ -514,7 +704,7 @@ ClassAEndDeviceLorawanMac::SetSecondReceiveWindowDataRate(uint8_t dataRate)
 }
 
 uint8_t
-ClassAEndDeviceLorawanMac::GetSecondReceiveWindowDataRate() const
+ClassAEndDeviceLorawanMac::GetSecondReceiveWindowDataRate(void)
 {
     return m_secondReceiveWindowDataRate;
 }
@@ -526,7 +716,7 @@ ClassAEndDeviceLorawanMac::SetSecondReceiveWindowFrequency(double frequencyMHz)
 }
 
 double
-ClassAEndDeviceLorawanMac::GetSecondReceiveWindowFrequency() const
+ClassAEndDeviceLorawanMac::GetSecondReceiveWindowFrequency(void)
 {
     return m_secondReceiveWindowFrequency;
 }
@@ -568,7 +758,7 @@ ClassAEndDeviceLorawanMac::OnRxClassParamSetupReq(Ptr<RxParamSetupReq> rxParamSe
 
     // Craft a RxParamSetupAns as response
     NS_LOG_INFO("Adding RxParamSetupAns reply");
-    m_macCommandList.emplace_back(CreateObject<RxParamSetupAns>(offsetOk, dataRateOk, true));
+    m_macCommandList.push_back(CreateObject<RxParamSetupAns>(offsetOk, dataRateOk, true));
 }
 
 } /* namespace lorawan */

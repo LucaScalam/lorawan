@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -40,7 +41,7 @@ NS_LOG_COMPONENT_DEFINE("LoraChannel");
 NS_OBJECT_ENSURE_REGISTERED(LoraChannel);
 
 TypeId
-LoraChannel::GetTypeId()
+LoraChannel::GetTypeId(void)
 {
     static TypeId tid =
         TypeId("ns3::LoraChannel")
@@ -98,7 +99,7 @@ LoraChannel::Remove(Ptr<LoraPhy> phy)
 }
 
 std::size_t
-LoraChannel::GetNDevices() const
+LoraChannel::GetNDevices(void) const
 {
     return m_phyList.size();
 }
@@ -144,7 +145,9 @@ LoraChannel::Send(Ptr<LoraPhy> sender,
             Time delay = m_delay->GetDelay(senderMobility, receiverMobility);
 
             // Compute received power using the loss model
-            double rxPowerDbm = GetRxPower(txPowerDbm, senderMobility, receiverMobility);
+            // double rxPowerDbm = GetRxPower(txPowerDbm, senderMobility, receiverMobility);
+            double rxPowerDbm = GetRxPowerPaperMetric(txPowerDbm, senderMobility, receiverMobility);
+            
 
             NS_LOG_DEBUG("Propagation: txPower="
                          << txPowerDbm << "dbm, rxPower=" << rxPowerDbm << "dbm, "
@@ -207,6 +210,33 @@ LoraChannel::GetRxPower(double txPowerDbm,
                         Ptr<MobilityModel> receiverMobility) const
 {
     return m_loss->CalcRxPower(txPowerDbm, senderMobility, receiverMobility);
+}
+
+double
+LoraChannel::GetRxPowerPaperMetric(double txPowerDbm,
+                        Ptr<MobilityModel> senderMobility,
+                        Ptr<MobilityModel> receiverMobility) const
+{
+    double d_0 = 1000;
+    double n = 2.08;
+    double B = 127.41;
+
+    double x1 = senderMobility->GetPosition().x;
+    double y1 = senderMobility->GetPosition().y;
+    double x2 = receiverMobility->GetPosition().x;
+    double y2 = receiverMobility->GetPosition().y;
+    // NS_LOG_FUNCTION("(senderMobility->GetPosition().x1: " << x1 << "\n");
+    // NS_LOG_FUNCTION("(senderMobility->GetPosition().y1: " << y1 << "\n");
+    // NS_LOG_FUNCTION("(receiverMobility->GetPosition().x1: " << x2 << "\n");
+    // NS_LOG_FUNCTION("(receiverMobility->GetPosition().y1: " << y2 << "\n");
+
+    double distance = sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
+    NS_LOG_FUNCTION("(distance: " << distance << "\n");
+    double rx_power = txPowerDbm - (B + 10 * n * log10(distance / d_0));
+
+    NS_LOG_FUNCTION("rx_power" << rx_power);
+
+    return rx_power;
 }
 
 std::ostream&

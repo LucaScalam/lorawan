@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -21,6 +22,7 @@
 #define LORA_TAG_H
 
 #include "ns3/tag.h"
+#include "ns3/nstime.h"
 
 namespace ns3
 {
@@ -34,8 +36,8 @@ namespace lorawan
 class LoraTag : public Tag
 {
   public:
-    static TypeId GetTypeId();
-    TypeId GetInstanceTypeId() const override;
+    static TypeId GetTypeId(void);
+    virtual TypeId GetInstanceTypeId(void) const;
 
     /**
      * Create a LoraTag with a given spreading factor and collision.
@@ -45,12 +47,12 @@ class LoraTag : public Tag
      */
     LoraTag(uint8_t sf = 0, uint8_t destroyedBy = 0);
 
-    ~LoraTag() override;
+    virtual ~LoraTag();
 
-    void Serialize(TagBuffer i) const override;
-    void Deserialize(TagBuffer i) override;
-    uint32_t GetSerializedSize() const override;
-    void Print(std::ostream& os) const override;
+    virtual void Serialize(TagBuffer i) const;
+    virtual void Deserialize(TagBuffer i);
+    virtual uint32_t GetSerializedSize() const;
+    virtual void Print(std::ostream& os) const;
 
     /**
      * Read which Spreading Factor this packet was transmitted with.
@@ -100,7 +102,7 @@ class LoraTag : public Tag
      * This value works in two ways:
      * - It is used by the GW to signal to the NS the frequency of the uplink
          packet
-     * - It is used by the NS to signal to the GW the frequency of a downlink
+     * - It is used by the NS to signal to the GW the freqeuncy of a downlink
          packet
      */
     void SetFrequency(double frequency);
@@ -108,14 +110,14 @@ class LoraTag : public Tag
     /**
      * Get the frequency of the packet.
      */
-    double GetFrequency() const;
+    double GetFrequency(void);
 
     /**
      * Get the data rate for this packet.
      *
      * \return The data rate that needs to be employed for this packet.
      */
-    uint8_t GetDataRate() const;
+    uint8_t GetDataRate(void);
 
     /**
      * Set the data rate for this packet.
@@ -124,6 +126,27 @@ class LoraTag : public Tag
      */
     void SetDataRate(uint8_t dataRate);
 
+    /**
+     * Get the queue priority for this packet.
+     *
+     * \return The queue priority of this packet
+     */
+    uint8_t GetPriority(void);
+
+    /**
+     * Set the queue priority for this packet.
+     *
+     * \param priority The priority
+     */
+    void SetPriority(uint8_t priority);
+
+    void SetTimeAddedQueue(Time added2queue);
+    Time GetTimeAddedQueue();
+    void SetTimeRemovedQueue(Time removedFqueue);
+    Time GetTimeRemovedQueue();
+
+
+
   private:
     uint8_t m_sf;          //!< The Spreading Factor used by the packet.
     uint8_t m_destroyedBy; //!< The Spreading Factor that destroyed the packet.
@@ -131,6 +154,9 @@ class LoraTag : public Tag
     uint8_t m_dataRate;    //!< The Data Rate that needs to be used to send this
     //! packet.
     double m_frequency; //!< The frequency of this packet
+    uint8_t m_priority; //The priority of this packet
+    Time m_timeAdded2Queue; //Time put into the queue
+    Time m_timeRemovedFromQueue; //Time removed from the queue
 };
 } // namespace lorawan
 } // namespace ns3

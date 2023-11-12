@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -27,10 +28,12 @@ namespace ns3
 namespace lorawan
 {
 
+NS_LOG_COMPONENT_DEFINE("LoraTag");
 NS_OBJECT_ENSURE_REGISTERED(LoraTag);
+    
 
 TypeId
-LoraTag::GetTypeId()
+LoraTag::GetTypeId(void)
 {
     static TypeId tid =
         TypeId("ns3::LoraTag").SetParent<Tag>().SetGroupName("lorawan").AddConstructor<LoraTag>();
@@ -38,7 +41,7 @@ LoraTag::GetTypeId()
 }
 
 TypeId
-LoraTag::GetInstanceTypeId() const
+LoraTag::GetInstanceTypeId(void) const
 {
     return GetTypeId();
 }
@@ -57,7 +60,7 @@ LoraTag::~LoraTag()
 }
 
 uint32_t
-LoraTag::GetSerializedSize() const
+LoraTag::GetSerializedSize(void) const
 {
     // Each datum about a SF is 1 byte + receivePower (the size of a double) +
     // frequency (the size of a double)
@@ -133,13 +136,13 @@ LoraTag::SetFrequency(double frequency)
 }
 
 double
-LoraTag::GetFrequency() const
+LoraTag::GetFrequency(void)
 {
     return m_frequency;
 }
 
 uint8_t
-LoraTag::GetDataRate() const
+LoraTag::GetDataRate(void)
 {
     return m_dataRate;
 }
@@ -148,6 +151,42 @@ void
 LoraTag::SetDataRate(uint8_t dataRate)
 {
     m_dataRate = dataRate;
+}
+
+uint8_t
+LoraTag::GetPriority(void)
+{
+    return m_priority;
+}
+
+void
+LoraTag::SetPriority(uint8_t priority)
+{
+    m_priority = priority;
+}
+
+Time
+LoraTag::GetTimeAddedQueue(void)
+{
+    return m_timeAdded2Queue;
+}
+
+void
+LoraTag::SetTimeAddedQueue(Time m_timeAdded2Queue)
+{
+    m_timeAdded2Queue = m_timeAdded2Queue;
+}
+
+Time
+LoraTag::GetTimeRemovedQueue(void)
+{
+    return m_timeRemovedFromQueue;
+}
+
+void
+LoraTag::SetTimeRemovedQueue(Time removedFqueue)
+{
+    m_timeRemovedFromQueue = removedFqueue;
 }
 
 } // namespace lorawan

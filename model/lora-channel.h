@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -78,15 +79,15 @@ class LoraChannel : public Channel
 {
   public:
     // TypeId
-    static TypeId GetTypeId();
+    static TypeId GetTypeId(void);
 
     // Constructor and destructor
     LoraChannel();
-    ~LoraChannel() override;
+    virtual ~LoraChannel();
 
     // Inherited from Channel.
-    std::size_t GetNDevices() const override;
-    Ptr<NetDevice> GetDevice(std::size_t i) const override;
+    virtual std::size_t GetNDevices(void) const;
+    virtual Ptr<NetDevice> GetDevice(std::size_t i) const;
 
     /**
      * Construct a LoraChannel with a loss and delay model.
@@ -159,6 +160,10 @@ class LoraChannel : public Channel
     double GetRxPower(double txPowerDbm,
                       Ptr<MobilityModel> senderMobility,
                       Ptr<MobilityModel> receiverMobility) const;
+
+    double GetRxPowerPaperMetric(double txPowerDbm,
+                                Ptr<MobilityModel> senderMobility,
+                                Ptr<MobilityModel> receiverMobility) const;
 
   private:
     /**

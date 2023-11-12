@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -47,17 +48,18 @@ class LorawanMacHeader : public Header
         UNCONFIRMED_DATA_DOWN = 3,
         CONFIRMED_DATA_UP = 4,
         CONFIRMED_DATA_DOWN = 5,
+        BEACON = 6,
         PROPRIETARY = 7
     };
 
-    static TypeId GetTypeId();
+    static TypeId GetTypeId(void);
 
     LorawanMacHeader();
-    ~LorawanMacHeader() override;
+    ~LorawanMacHeader();
 
     // Pure virtual methods from Header that need to be implemented by this class
-    TypeId GetInstanceTypeId() const override;
-    uint32_t GetSerializedSize() const override;
+    virtual TypeId GetInstanceTypeId(void) const;
+    virtual uint32_t GetSerializedSize(void) const;
 
     /**
      * Serialize the header.
@@ -67,7 +69,7 @@ class LorawanMacHeader : public Header
      * \param start A pointer to the buffer that will be filled with the
      * serialization.
      */
-    void Serialize(Buffer::Iterator start) const override;
+    virtual void Serialize(Buffer::Iterator start) const;
 
     /**
      * Deserialize the header.
@@ -75,14 +77,14 @@ class LorawanMacHeader : public Header
      * \param start A pointer to the buffer we need to deserialize.
      * \return The number of consumed bytes.
      */
-    uint32_t Deserialize(Buffer::Iterator start) override;
+    virtual uint32_t Deserialize(Buffer::Iterator start);
 
     /**
      * Print the header in a human readable format.
      *
      * \param os The std::ostream on which to print the header.
      */
-    void Print(std::ostream& os) const override;
+    virtual void Print(std::ostream& os) const;
 
     /**
      * Set the message type.
@@ -96,7 +98,7 @@ class LorawanMacHeader : public Header
      *
      * \return The uint8_t corresponding to this header's message type.
      */
-    uint8_t GetMType() const;
+    uint8_t GetMType(void) const;
 
     /**
      * Set the major version of this header.
@@ -110,7 +112,7 @@ class LorawanMacHeader : public Header
      *
      * \return The uint8_t corresponding to this header's major version.
      */
-    uint8_t GetMajor() const;
+    uint8_t GetMajor(void) const;
 
     /**
      * Check whether this header is for an uplink message
@@ -118,9 +120,9 @@ class LorawanMacHeader : public Header
      * \return True if the message is meant to be sent from an ED to a GW, false
      * otherwise.
      */
-    bool IsUplink() const;
+    bool IsUplink(void) const;
 
-    bool IsConfirmed() const;
+    bool IsConfirmed(void) const;
 
   private:
     /**

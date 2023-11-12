@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -58,7 +59,7 @@ LoraPhyHelper::SetDeviceType(enum DeviceType dt)
 }
 
 TypeId
-LoraPhyHelper::GetDeviceType() const
+LoraPhyHelper::GetDeviceType(void) const
 {
     NS_LOG_FUNCTION(this);
     return m_phy.GetTypeId();
@@ -76,7 +77,9 @@ LoraPhyHelper::Create(Ptr<Node> node, Ptr<NetDevice> device) const
     NS_LOG_FUNCTION(this << node->GetId() << device);
 
     // Create the PHY and set its channel
+    NS_LOG_FUNCTION("test0");
     Ptr<LoraPhy> phy = m_phy.Create<LoraPhy>();
+    NS_LOG_FUNCTION("test1");
     phy->SetChannel(m_channel);
 
     // Configuration is different based on the kind of device we have to create
@@ -95,6 +98,11 @@ LoraPhyHelper::Create(Ptr<Node> node, Ptr<NetDevice> device) const
         // We expect that MacHelper instances will overwrite this setting if the
         // device will operate in a different region
         std::vector<double> frequencies;
+        frequencies.push_back(867.1);
+        frequencies.push_back(867.3);
+        frequencies.push_back(867.5);
+        frequencies.push_back(867.7);
+        frequencies.push_back(867.9);
         frequencies.push_back(868.1);
         frequencies.push_back(868.3);
         frequencies.push_back(868.5);

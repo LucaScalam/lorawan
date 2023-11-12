@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2018 University of Padova
  *
@@ -27,6 +28,7 @@
 #include "network-controller.h"
 #include "network-scheduler.h"
 #include "network-status.h"
+#include "offset_struct.h"
 
 #include "ns3/application.h"
 #include "ns3/log.h"
@@ -51,20 +53,20 @@ namespace lorawan
 class NetworkServer : public Application
 {
   public:
-    static TypeId GetTypeId();
+    static TypeId GetTypeId(void);
 
     NetworkServer();
-    ~NetworkServer() override;
+    virtual ~NetworkServer();
 
     /**
      * Start the NS application.
      */
-    void StartApplication() override;
+    void StartApplication(void);
 
     /**
      * Stop the NS application.
      */
-    void StopApplication() override;
+    void StopApplication(void);
 
     /**
      * Inform the NetworkServer that these nodes are connected to the network.
@@ -101,7 +103,22 @@ class NetworkServer : public Application
                  uint16_t protocol,
                  const Address& address);
 
-    Ptr<NetworkStatus> GetNetworkStatus();
+    Ptr<NetworkStatus> GetNetworkStatus(void);
+    
+    /**
+     *
+     */
+    void OffsetCalculation(void);
+
+    void BeaconWindowOpen(void);
+
+    void PingSlotOpen(LoraDeviceAddress devAddress);
+
+    void TrafficEnqueue(Ptr<ExponentialRandomVariable> ev);
+    
+    void TrafficGeneratorManager(void);
+
+
 
   protected:
     Ptr<NetworkStatus> m_status;
@@ -109,6 +126,53 @@ class NetworkServer : public Application
     Ptr<NetworkScheduler> m_scheduler;
 
     TracedCallback<Ptr<const Packet>> m_receivedPacket;
+
+    /**
+     * Duration of a slot from the beacon period architecture. By standard,
+     * it has a value of 30ms.
+     */
+    Time m_slotDuration;
+    
+    /**
+     * K parameter value from [0,7]. 2**k represents the number of ping slot the
+     * node will open within one beacon period
+     */
+    uint8_t m_kParameter;
+
+    // /**
+    //  * Reference to the last event created inside the beacon period loop
+    //  */
+    // EventId m_lastBeaconRelatedEVent;
+
+    /**
+     * Moment in time in which the beacon period started
+     */
+    Time m_startBeaconPeriod;
+
+    /**
+     * Duration of the beacon period
+     */
+    Time m_beaconPeriod;
+
+    /**
+     * Duration of the beacon reserved period
+     */
+    Time m_beaconReserved;
+
+    /**
+     * Duration of the pseudo random offset at the beginning of the first slot ping window
+     */
+    Time m_offset;
+
+    /**
+     * inverse of lambda paramter: packets/s generated at the NS is lambda, so this parameter
+     * should be 1/lambda = [s/packet]
+     */    
+    double m_lambda_inv;
+
+    Ptr<UniformRandomVariable> m_uniform_rv;
+
+
 };
 
 } // namespace lorawan

@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -49,7 +50,7 @@ PeriodicSenderHelper::PeriodicSenderHelper()
     m_intervalProb->SetAttribute("Max", DoubleValue(1));
 
     m_pktSize = 10;
-    m_pktSizeRV = nullptr;
+    m_pktSizeRV = 0;
 }
 
 PeriodicSenderHelper::~PeriodicSenderHelper()
@@ -72,7 +73,7 @@ ApplicationContainer
 PeriodicSenderHelper::Install(NodeContainer c) const
 {
     ApplicationContainer apps;
-    for (auto i = c.Begin(); i != c.End(); ++i)
+    for (NodeContainer::Iterator i = c.Begin(); i != c.End(); ++i)
     {
         apps.Add(InstallPriv(*i));
     }
@@ -83,6 +84,7 @@ PeriodicSenderHelper::Install(NodeContainer c) const
 Ptr<Application>
 PeriodicSenderHelper::InstallPriv(Ptr<Node> node) const
 {
+    NS_LOG_INFO("------------- InstallPriv ");
     NS_LOG_FUNCTION(this << node);
 
     Ptr<PeriodicSender> app = m_factory.Create<PeriodicSender>();
@@ -119,7 +121,8 @@ PeriodicSenderHelper::InstallPriv(Ptr<Node> node) const
     app->SetInterval(interval);
     NS_LOG_DEBUG("Created an application with interval = " << interval.GetHours() << " hours");
 
-    app->SetInitialDelay(Seconds(m_initialDelay->GetValue(0, interval.GetSeconds())));
+    // app->SetInitialDelay(Seconds(m_initialDelay->GetValue(0, interval.GetSeconds())));
+    app->SetInitialDelay(Seconds(0));
     app->SetPacketSize(m_pktSize);
     if (m_pktSizeRV)
     {

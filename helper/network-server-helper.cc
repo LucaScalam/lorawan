@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -74,7 +75,7 @@ ApplicationContainer
 NetworkServerHelper::Install(NodeContainer c)
 {
     ApplicationContainer apps;
-    for (auto i = c.Begin(); i != c.End(); ++i)
+    for (NodeContainer::Iterator i = c.Begin(); i != c.End(); ++i)
     {
         apps.Add(InstallPriv(*i));
     }
@@ -86,14 +87,13 @@ Ptr<Application>
 NetworkServerHelper::InstallPriv(Ptr<Node> node)
 {
     NS_LOG_FUNCTION(this << node);
-
     Ptr<NetworkServer> app = m_factory.Create<NetworkServer>();
 
     app->SetNode(node);
     node->AddApplication(app);
 
     // Cycle on each gateway
-    for (auto i = m_gateways.Begin(); i != m_gateways.End(); i++)
+    for (NodeContainer::Iterator i = m_gateways.Begin(); i != m_gateways.End(); i++)
     {
         // Add the connections with the gateway
         // Create a PointToPoint link between gateway and NS

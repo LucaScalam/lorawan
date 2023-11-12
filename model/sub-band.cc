@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2017 University of Padova
  *
@@ -31,7 +32,7 @@ NS_LOG_COMPONENT_DEFINE("SubBand");
 NS_OBJECT_ENSURE_REGISTERED(SubBand);
 
 TypeId
-SubBand::GetTypeId()
+SubBand::GetTypeId(void)
 {
     static TypeId tid = TypeId("ns3::SubBand").SetParent<Object>().SetGroupName("lorawan");
     return tid;
@@ -61,25 +62,31 @@ SubBand::~SubBand()
 }
 
 double
-SubBand::GetFirstFrequency() const
+SubBand::GetFirstFrequency(void)
 {
     return m_firstFrequency;
 }
 
 double
-SubBand::GetDutyCycle() const
+SubBand::GetLastFrequency(void)
+{
+    return m_lastFrequency;
+}
+
+double
+SubBand::GetDutyCycle(void)
 {
     return m_dutyCycle;
 }
 
 bool
-SubBand::BelongsToSubBand(double frequency) const
+SubBand::BelongsToSubBand(double frequency)
 {
-    return (frequency > m_firstFrequency) && (frequency < m_lastFrequency);
+    return (frequency >= m_firstFrequency) && (frequency <= m_lastFrequency);
 }
 
 bool
-SubBand::BelongsToSubBand(Ptr<LogicalLoraChannel> logicalChannel) const
+SubBand::BelongsToSubBand(Ptr<LogicalLoraChannel> logicalChannel)
 {
     double frequency = logicalChannel->GetFrequency();
     return BelongsToSubBand(frequency);
@@ -92,7 +99,7 @@ SubBand::SetNextTransmissionTime(Time nextTime)
 }
 
 Time
-SubBand::GetNextTransmissionTime()
+SubBand::GetNextTransmissionTime(void)
 {
     return m_nextTransmissionTime;
 }
@@ -104,7 +111,7 @@ SubBand::SetMaxTxPowerDbm(double maxTxPowerDbm)
 }
 
 double
-SubBand::GetMaxTxPowerDbm() const
+SubBand::GetMaxTxPowerDbm(void)
 {
     return m_maxTxPowerDbm;
 }

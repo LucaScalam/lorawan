@@ -1,3 +1,4 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2018 University of Padova
  *
@@ -40,12 +41,10 @@ NS_LOG_COMPONENT_DEFINE("NetworkStatus");
 NS_OBJECT_ENSURE_REGISTERED(NetworkStatus);
 
 TypeId
-NetworkStatus::GetTypeId()
+NetworkStatus::GetTypeId(void)
 {
-    static TypeId tid = TypeId("ns3::NetworkStatus")
-                            .SetParent<Object>()
-                            .AddConstructor<NetworkStatus>()
-                            .SetGroupName("lorawan");
+    static TypeId tid =
+        TypeId("ns3::NetworkStatus").AddConstructor<NetworkStatus>().SetGroupName("lorawan");
     return tid;
 }
 
@@ -126,6 +125,7 @@ NetworkStatus::NeedsReply(LoraDeviceAddress deviceAddress)
 Address
 NetworkStatus::GetBestGatewayForDevice(LoraDeviceAddress deviceAddress, int window)
 {
+    NS_LOG_FUNCTION(deviceAddress);
     // Get the endDeviceStatus we are interested in
     Ptr<EndDeviceStatus> edStatus = m_endDeviceStatuses.at(deviceAddress);
     double replyFrequency;
@@ -137,17 +137,28 @@ NetworkStatus::GetBestGatewayForDevice(LoraDeviceAddress deviceAddress, int wind
     {
         replyFrequency = edStatus->GetSecondReceiveWindowFrequency();
     }
+    else if (window == 3)
+    {
+        // Bcon window
+        replyFrequency = edStatus->GetBeaconFreq();
+    }
+    else if (window == 4)
+    {
+        // Ping Slot window
+        replyFrequency = edStatus->GetPingSlotFreq();
+    }
     else
     {
         NS_ABORT_MSG("Invalid window value");
     }
+    
+    NS_LOG_DEBUG("ReplyFrequency chosen for the GW " << replyFrequency);
 
     // Get the list of gateways that this device can reach
     // NOTE: At this point, we could also take into account the whole network to
     // identify the best gateway according to various metrics. For now, we just
     // ask the EndDeviceStatus to pick the best gateway for us via its method.
     std::map<double, Address> gwAddresses = edStatus->GetPowerGatewayMap();
-
     // By iterating on the map in reverse, we go from the 'best'
     // gateway, i.e. the one with the highest received power, to the
     // worst.
@@ -158,8 +169,12 @@ NetworkStatus::GetBestGatewayForDevice(LoraDeviceAddress deviceAddress, int wind
             m_gatewayStatuses.find(it->second)->second->IsAvailableForTransmission(replyFrequency);
         if (isAvailable)
         {
+            NS_LOG_DEBUG("GW with id " << it->second << " available for Tx.");
             bestGwAddress = it->second;
             break;
+        }
+        else {
+            NS_LOG_DEBUG("GW with id " << it->second << " not available for Tx.");
         }
     }
 
@@ -202,7 +217,7 @@ NetworkStatus::GetReplyForDevice(LoraDeviceAddress edAddress, int windowNumber)
 Ptr<EndDeviceStatus>
 NetworkStatus::GetEndDeviceStatus(Ptr<const Packet> packet)
 {
-    NS_LOG_FUNCTION(this << packet);
+    // NS_LOG_FUNCTION(this << packet);
 
     // Get the address
     LorawanMacHeader mHdr;
@@ -218,14 +233,14 @@ NetworkStatus::GetEndDeviceStatus(Ptr<const Packet> packet)
     else
     {
         NS_LOG_ERROR("EndDeviceStatus not found");
-        return nullptr;
+        return 0;
     }
 }
 
 Ptr<EndDeviceStatus>
 NetworkStatus::GetEndDeviceStatus(LoraDeviceAddress address)
 {
-    NS_LOG_FUNCTION(this << address);
+    // NS_LOG_FUNCTION(this << address);
 
     auto it = m_endDeviceStatuses.find(address);
     if (it != m_endDeviceStatuses.end())
@@ -235,16 +250,17 @@ NetworkStatus::GetEndDeviceStatus(LoraDeviceAddress address)
     else
     {
         NS_LOG_ERROR("EndDeviceStatus not found");
-        return nullptr;
+        return 0;
     }
 }
 
 int
-NetworkStatus::CountEndDevices()
+NetworkStatus::CountEndDevices(void)
 {
     NS_LOG_FUNCTION(this);
 
     return m_endDeviceStatuses.size();
 }
+
 } // namespace lorawan
 } // namespace ns3
